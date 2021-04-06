@@ -11,4 +11,8 @@ def pdf_to_word(file=0, ):
     cv.close()
 
 def word_to_pdf():
-    output = subprocess.check_output(['unoconv', '-f', 'pdf' ,'/home/javi/Final_Computacion/58004-Cercasi-Javier/pdfs/enunciado.pdf.docx'])
+    file = "enunciado.docx"
+    output = subprocess.check_output(['unoconv', '-f', 'pdf' ,os.getcwd()+"/"+file])
+
+#word_to_pdf()
+#pdf_to_word()
