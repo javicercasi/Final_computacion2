@@ -9,10 +9,12 @@ def pdf_to_word(file=0, ):
     cv = Converter(os.getcwd()+"/"+file)
     cv.convert(os.getcwd()+"/"+file.split(".")[0]+'.docx', start=0, end=None)
     cv.close()
+    return(os.getcwd()+"/"+file.split(".")[0]+'.docx')
 
 def word_to_pdf():
     file = "enunciado.docx"
     output = subprocess.check_output(['unoconv', '-f', 'pdf' ,os.getcwd()+"/"+file])
+    return(os.getcwd()+"/"+file.split(".")[0]+'.pdf')
 
 #word_to_pdf()
 #pdf_to_word()
