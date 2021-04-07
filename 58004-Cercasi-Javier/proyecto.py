@@ -15,16 +15,26 @@ async def handle_echo(reader, writer):
     encabezado = data.decode().splitlines()[0]  # GET /imagen.jpg
     archivo = argsdocumentroot + encabezado.split()[1].split("?")[0]
     addr = writer.get_extra_info('peername')
+    #print("ARCHIVOOOOO", archivo)
 
     if archivo == (argsdocumentroot + "/"):
         archivo = argsdocumentroot + '/index.html'
+        """print("INICIOO")
+        while True:
+            request = await reader.read(1024)
+            data += request
+            if len(request) < 1024:
+                encabeza2 = data.decode()
+                break
+        print(encabeza2)
+        print("PASE1")"""
 
-    if os.path.isfile(archivo) is False:
-        archivo = argsdocumentroot + '/400error.html'
-        codigo = "HTTP/1.1 400 File Not Found"
-        extension = "html"
+    #"""if os.path.isfile(archivo) is False:
+    #    archivo = argsdocumentroot + '/400error.html'
+    #    codigo = "HTTP/1.1 400 File Not Found"
+    #    extension = "html""""
 
-    elif len(encabezado.split()[1].split("?")) != 1:
+    if len(encabezado.split()[1].split("?")) != 1:
         archivo = argsdocumentroot + '/500error.html'
         codigo = "HTTP/1.1 500 Internal Server Error"
         extension = "html"
@@ -32,21 +42,25 @@ async def handle_echo(reader, writer):
     else:
         extension = archivo.split('.')[1]
         codigo = "HTTP/1.1 200 OK"
+    print("EXTENSION:", extension)
+    if extension == "pdf":
+        archivo = pdf_to_word()
+        extension = "docx" 
+
+    if extension == "docx":
+        archivo = word_to_pdf()
+        extension = "pdf"
 
     header = bytearray(codigo + "\r\nContent-type:" + dic[extension] + "\r\nContent-length:"+str((os.path.getsize(archivo)))+"\r\n\r\n", 'utf8')
     writer.write(header)
+    #print("ARCHIVO:", archivo, "EXT:", extension, header)
 
     #Tratado de archivo:
 
-    #if extension == "pdf":
-    #   archivo = pdf_to_word()
-    """if extension == "docx":
-        archivo = word_to_pdf()"""
     
-    print("ARCHIVO", archivo, dic[extension])
-    
+
     fd = os.open(archivo, os.O_RDONLY)
-    body = os.read(fd, 100000)
+    body = os.read(fd, os.path.getsize(archivo))
     writer.write(body)
     writer.close()
     
@@ -59,6 +73,7 @@ async def handle_echo(reader, writer):
             await writer.drain()
             fin = False
     writer.close()"""
+
 
 
 async def main():
