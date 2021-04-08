@@ -15,9 +15,19 @@ async def handle_echo(reader, writer):
     encabezado = data.decode().splitlines()[0]  # GET /imagen.jpg
     archivo = argsdocumentroot + encabezado.split()[1].split("?")[0]
     addr = writer.get_extra_info('peername')
+    #print("ARCHIVOOOOO", archivo)
 
     if archivo == (argsdocumentroot + "/"):
         archivo = argsdocumentroot + '/index.html'
+        """print("INICIOO")
+        while True:
+            request = await reader.read(1024)
+            data += request
+            if len(request) < 1024:
+                encabeza2 = data.decode()
+                break
+        print(encabeza2)
+        print("PASE1")"""
 
     #"""if os.path.isfile(archivo) is False:
     #    archivo = argsdocumentroot + '/400error.html'
@@ -44,8 +54,13 @@ async def handle_echo(reader, writer):
     header = bytearray(codigo + "\r\nContent-type:" + dic[extension] + "\r\nContent-length:"+str((os.path.getsize(archivo)))+"\r\n\r\n", 'utf8')
     writer.write(header)
 
+
     fd = os.open(archivo, os.O_RDONLY)
-    fin = True
+    body = os.read(fd, os.path.getsize(archivo))
+    writer.write(body)
+    writer.close()
+    
+    """fin = True
     while fin is True:
         body = os.read(fd, argssize)
         writer.write(body)
@@ -53,7 +68,7 @@ async def handle_echo(reader, writer):
             os.close(fd)
             await writer.drain()
             fin = False
-    writer.close()
+    writer.close()"""
 
 
 
