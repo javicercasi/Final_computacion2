@@ -2,6 +2,7 @@ import os
 import asyncio
 from pedido import argumentos
 from convertidor_doc import pdf_to_word , word_to_pdf
+from convertidor_imag import imagenes
 #args = argumentos()
 #argsdocumentroot = "/home/javi/Final_Computacion/58004-Cercasi-Javier"
 argsdocumentroot = os.getcwd()
@@ -23,15 +24,16 @@ async def handle_echo(reader, writer):
         lista = encabezado.split(" ")
         archivo = argsdocumentroot+"/"+lista[3]
         extension = lista[5]
+        #print("LISTAA", lista)
 
     if archivo == (argsdocumentroot + "/"):
         archivo = argsdocumentroot + '/index.html'
 
-    if os.path.isfile(archivo) is False and os.path.isfile(archivo+"."+extension) is False :
-        archivo = argsdocumentroot + '/400error.html'
-        codigo = "HTTP/1.1 400 File Not Found"
-        control = 1
-        extension = "html"
+    #if os.path.isfile(archivo) is False and os.path.isfile(archivo+"."+extension) is False :
+    #    archivo = argsdocumentroot + '/400error.html'
+    #    codigo = "HTTP/1.1 400 File Not Found"
+    #    control = 1
+    #    extension = "html"
 
     if len(encabezado.split()[1].split("?")) != 1:
         archivo = argsdocumentroot + '/500error.html'
@@ -46,7 +48,7 @@ async def handle_echo(reader, writer):
         except:
             extension = archivo.split('.')[1]
 
-    print("EXTENsion", extension, archivo)
+    #print("EXTENsion", extension, archivo)
     #print("EXT", extension)
 
     if extension == "docx":
@@ -55,7 +57,13 @@ async def handle_echo(reader, writer):
     elif extension == "pdf":
         archivo = word_to_pdf(archivo+".docx")
 
-    print("ARCHIVO",archivo, "EXTENSION",extension)
+    print("ARCGHI", archivo, "ADS", extension )
+    if extension == "jpg" or extension == "png" or extension == "ppm" or extension == "jpeg" or extension == "BMP" or extension == "gif" or extension == "TIFF" or extension == "EPS":
+        imagenes(lista[3], lista[5], lista[7])
+        archivo = lista[3]
+        extension = lista[3]+"."+lista[7]
+    print("SALOIII")
+    #print("ARCHIVO",archivo, "EXTENSION",extension)
     header = bytearray(codigo + "\r\nContent-type:" + dic[extension] + "\r\nContent-length:"+str((os.path.getsize(archivo)))+"\r\n\r\n", 'utf8')
     writer.write(header)
 
