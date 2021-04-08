@@ -17,19 +17,12 @@ async def handle_echo(reader, writer):
     encabezado = data.decode().splitlines()[0]  # GET /imagen.jpg
     archivo = argsdocumentroot + encabezado.split()[1].split("?")[0]
     addr = writer.get_extra_info('peername')
-    #print("ENCAA", encabezado, len(encabezado))
 
-    if len(encabezado) > 20:
-        try:
-            #print("ENCAAAefsfdsA", encabezado, len(encabezado))
-            encabezado = encabezado.replace("&"," ").replace("="," ").replace("?"," ")
-            lista = encabezado.split(" ")
-            #print("LISTA", lista)
-            archivo = argsdocumentroot+"/"+lista[3]
-            extension = lista[5]
-        except:
-            archivo = "favicon.ico"
-    #print("ASD",len(encabezado))
+    if len(encabezado) > 30:
+        encabezado = encabezado.replace("&"," ").replace("="," ").replace("?"," ")
+        lista = encabezado.split(" ")
+        archivo = argsdocumentroot+"/"+lista[3]
+        extension = lista[5]
 
     if archivo == (argsdocumentroot + "/"):
         archivo = argsdocumentroot + '/index.html'
@@ -49,12 +42,11 @@ async def handle_echo(reader, writer):
         codigo = "HTTP/1.1 200 OK"
         try:
             if control == 0:
-                print(encabezado, "entre11111111", lista[5])
                 extension= lista[5]
         except:
-            print(encabezado,"entre2222222")
             extension = archivo.split('.')[1]
-    #print("EXTENsion", extension, archivo)
+
+    print("EXTENsion", extension, archivo)
     #print("EXT", extension)
 
     if extension == "docx":
