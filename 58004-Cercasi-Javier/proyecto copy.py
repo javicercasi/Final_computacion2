@@ -11,38 +11,33 @@ argssize = 10000
 async def handle_echo(reader, writer):
 
     dic = {"txt": " text/plain", "pdf":"application/pdf", "jpg": " image/jpeg", "ppm": " image/x-portable-pixmap", "html": " text/html", "docx": "application/docx", "ico": "image/x-icon"}
-    data = await reader.read(1024)
-
-    try:
-        encabezado = data.decode().splitlines()[0] #solo necesito la primer linea
-        archivo = encabezado.split()[1] #el texto en la posicion 1 es /archivo.ext; 
-        #if archivo == '/':
-        #    archivo = '/index.html'
-    except:
-        archivo = '/index.html'
-    #encabezado = data.decode().splitlines()[0]  # GET /imagen.jpg
-    #print("ENCABEZADOOOOOOOO", encabezado)
-    #archivo = argsdocumentroot + encabezado.split()[1].split("?")[0]
-    print(archivo)
+    data = await reader.read(100)
+    extension = ""
+    control = 0
+    encabezado = data.decode().splitlines()[0]  # GET /imagen.jpg
+    archivo = argsdocumentroot + encabezado.split()[1].split("?")[0]
     addr = writer.get_extra_info('peername')
-    #print("ARCHIVOOOOO", archivo)
+    #print("ENCAA", encabezado, len(encabezado))
+
+    #if len(encabezado) > 30:
+    try:
+        #print("ENCAAAefsfdsA", encabezado, len(encabezado))
+        encabezado = encabezado.replace("&"," ").replace("="," ").replace("?"," ")
+        lista = encabezado.split(" ")
+        #print("LISTA", lista)
+        archivo = argsdocumentroot+"/"+lista[3]
+        extension = lista[5]
+    except:
+        archivo = "favicon.ico"
 
     if archivo == (argsdocumentroot + "/"):
         archivo = argsdocumentroot + '/index.html'
-        """print("INICIOO")
-        while True:
-            request = await reader.read(1024)
-            data += request
-            if len(request) < 1024:
-                encabeza2 = data.decode()
-                break
-        print(encabeza2)
-        print("PASE1")"""
 
-    #"""if os.path.isfile(archivo) is False:
-    #    archivo = argsdocumentroot + '/400error.html'
-    #    codigo = "HTTP/1.1 400 File Not Found"
-    #    extension = "html""""
+    if os.path.isfile(archivo) is False and os.path.isfile(archivo+"."+extension) is False :
+        archivo = argsdocumentroot + '/400error.html'
+        codigo = "HTTP/1.1 400 File Not Found"
+        control = 1
+        extension = "html"
 
     if len(encabezado.split()[1].split("?")) != 1:
         archivo = argsdocumentroot + '/500error.html'
@@ -50,27 +45,30 @@ async def handle_echo(reader, writer):
         extension = "html"
 
     else:
-        extension = archivo.split('.')[1]
         codigo = "HTTP/1.1 200 OK"
-
-    if extension == "pdf":
-        archivo = pdf_to_word()
-        extension = "docx" 
+        try:
+            if control == 0:
+                print(encabezado, "entre11111111", lista[5])
+                extension= lista[5]
+        except:
+            print(encabezado,"entre2222222")
+            extension = archivo.split('.')[1]
+    #print("EXTENsion", extension, archivo)
+    #print("EXT", extension)
 
     if extension == "docx":
-        archivo = word_to_pdf()
-        extension = "pdf"
+        archivo = pdf_to_word(archivo+".pdf")
 
+    elif extension == "pdf":
+        archivo = word_to_pdf(archivo+".docx")
+
+    print("ARCHIVO",archivo, "EXTENSION",extension)
     header = bytearray(codigo + "\r\nContent-type:" + dic[extension] + "\r\nContent-length:"+str((os.path.getsize(archivo)))+"\r\n\r\n", 'utf8')
     writer.write(header)
 
 
     fd = os.open(archivo, os.O_RDONLY)
-    body = os.read(fd, os.path.getsize(archivo))
-    writer.write(body)
-    writer.close()
-    
-    """fin = True
+    fin = True
     while fin is True:
         body = os.read(fd, argssize)
         writer.write(body)
@@ -78,7 +76,7 @@ async def handle_echo(reader, writer):
             os.close(fd)
             await writer.drain()
             fin = False
-    writer.close()"""
+    writer.close()
 
 
 
