@@ -13,6 +13,7 @@ async def handle_echo(reader, writer):
     dic = {"txt": " text/plain", "pdf":"application/pdf", "jpg": " image/jpeg", "ppm": " image/x-portable-pixmap", "html": " text/html", "docx": "application/docx", "ico": "image/x-icon"}
     data = await reader.read(100)
     extension = ""
+    control = 0
     encabezado = data.decode().splitlines()[0]  # GET /imagen.jpg
     archivo = argsdocumentroot + encabezado.split()[1].split("?")[0]
     addr = writer.get_extra_info('peername')
@@ -28,7 +29,14 @@ async def handle_echo(reader, writer):
 
     if archivo == (argsdocumentroot + "/"):
         archivo = argsdocumentroot + '/index.html'
-
+    
+    print("ARCHI", archivo)
+    if os.path.isfile(archivo+extension) is False:
+        print("SETIEE")
+        archivo = argsdocumentroot + '/400error.html'
+        codigo = "HTTP/1.1 400 File Not Found"
+        control = 1
+        extension = "html"
 
     if len(encabezado.split()[1].split("?")) != 1:
         archivo = argsdocumentroot + '/500error.html'
@@ -38,26 +46,31 @@ async def handle_echo(reader, writer):
     else:
         codigo = "HTTP/1.1 200 OK"
         try:
-            extension= lista[5]
+            if control == 0:
+                print("entre11111111", lista[5])
+                extension= lista[5]
         except:
+            print("entre2222222")
             extension = archivo.split('.')[1]
     #print("EXTENsion", extension, archivo)
+    print("EXT", extension)
 
-    if extension == "pdf":
-        print("ARCHI1",archivo+"."+extension)
-        archivo = pdf_to_word(archivo+"."+extension)
-        extension = "docx" 
+    if extension == "docx":
+        archivo = pdf_to_word(archivo+".pdf")
 
-    elif extension == "docx":
-        print("ARCHI2",archivo+"."+extension)
-        archivo = word_to_pdf(archivo+"."+extension)
-        extension = "pdf"
+    elif extension == "pdf":
+        archivo = word_to_pdf(archivo+".docx")
 
+    print("ARCHIVO",archivo, "EXTENSION",extension)
     header = bytearray(codigo + "\r\nContent-type:" + dic[extension] + "\r\nContent-length:"+str((os.path.getsize(archivo)))+"\r\n\r\n", 'utf8')
     writer.write(header)
 
 
     fd = os.open(archivo, os.O_RDONLY)
+    body = os.read(fd, os.path.getsize(archivo))
+    writer.write(body)
+    writer.close()
+    """fd = os.open(archivo, os.O_RDONLY)
     fin = True
     while fin is True:
         body = os.read(fd, argssize)
@@ -66,7 +79,7 @@ async def handle_echo(reader, writer):
             os.close(fd)
             await writer.drain()
             fin = False
-    writer.close()
+    writer.close()"""
 
 
 

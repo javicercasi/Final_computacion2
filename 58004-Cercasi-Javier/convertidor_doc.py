@@ -2,21 +2,19 @@ import os
 import subprocess
 from pdf2docx import Converter
 
-def pdf_to_word(file):
-    #path_input = '/home/javi/Final_Computacion/58004-Cercasi-Javier/pdfs/'
-    #path_output = '/home/javi/Final_Computacion/58004-Cercasi-Javier/pdfs/'
-    cv = Converter(file)
-    salida = file.split(".")[0]+'.docx'
-    print("FILE1",file, "SALIDI", salida)
-    cv.convert(salida, start=0, end=None)
+def pdf_to_word(entrada_pdf):
+
+    salida_doc = entrada_pdf.split(".")[0]+'.docx'
+    cv = Converter(entrada_pdf)
+    cv.convert(salida_doc, start=0, end=None)
     cv.close()
-    return(salida)
+    return(salida_doc)
 
-def word_to_pdf(file):
-    #file = "enunciado.docx"
-    print("FILE2",file)
-    output = subprocess.check_output(['unoconv', '-f', 'pdf' ,"/"+file])
-    return(file.split(".")[0]+'.pdf')
+def word_to_pdf(entrada_word):
 
-#word_to_pdf()
-#pdf_to_word()
+    salida_pdf = entrada_word.split(".")[0]+'.pdf'
+    output = subprocess.check_output(['unoconv', '-f', 'pdf' ,entrada_word])
+    return(salida_pdf)
+
+#print(word_to_pdf())
+#print(pdf_to_word())
