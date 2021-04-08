@@ -30,8 +30,8 @@ async def handle_echo(reader, writer):
     if archivo == (argsdocumentroot + "/"):
         archivo = argsdocumentroot + '/index.html'
     
-    print("ARCHI", archivo)
-    if os.path.isfile(archivo+extension) is False:
+    print("ARCHI", archivo+extension)
+    if os.path.isfile(archivo+"."+extension) is False:
         print("SETIEE")
         archivo = argsdocumentroot + '/400error.html'
         codigo = "HTTP/1.1 400 File Not Found"
@@ -47,10 +47,10 @@ async def handle_echo(reader, writer):
         codigo = "HTTP/1.1 200 OK"
         try:
             if control == 0:
-                print("entre11111111", lista[5])
+                print(encabezado, "entre11111111", lista[5])
                 extension= lista[5]
         except:
-            print("entre2222222")
+            print(encabezado,"entre2222222")
             extension = archivo.split('.')[1]
     #print("EXTENsion", extension, archivo)
     print("EXT", extension)
