@@ -11,9 +11,19 @@ argssize = 10000
 async def handle_echo(reader, writer):
 
     dic = {"txt": " text/plain", "pdf":"application/pdf", "jpg": " image/jpeg", "ppm": " image/x-portable-pixmap", "html": " text/html", "docx": "application/docx", "ico": "image/x-icon"}
-    data = await reader.read(100)
-    encabezado = data.decode().splitlines()[0]  # GET /imagen.jpg
-    archivo = argsdocumentroot + encabezado.split()[1].split("?")[0]
+    data = await reader.read(1024)
+
+    try:
+        encabezado = data.decode().splitlines()[0] #solo necesito la primer linea
+        archivo = encabezado.split()[1] #el texto en la posicion 1 es /archivo.ext; 
+        #if archivo == '/':
+        #    archivo = '/index.html'
+    except:
+        archivo = '/index.html'
+    #encabezado = data.decode().splitlines()[0]  # GET /imagen.jpg
+    #print("ENCABEZADOOOOOOOO", encabezado)
+    #archivo = argsdocumentroot + encabezado.split()[1].split("?")[0]
+    print(archivo)
     addr = writer.get_extra_info('peername')
     #print("ARCHIVOOOOO", archivo)
 
