@@ -11,7 +11,7 @@ argssize = 10000
 
 async def handle_echo(reader, writer):
 
-    dic = {"txt": " text/plain", "pdf":"application/pdf", "jpg": " image/jpeg", "ppm": " image/x-portable-pixmap", "html": " text/html", "docx": "application/docx", "ico": "image/x-icon"}
+    dic = {"txt": " text/plain", "pdf":"application/pdf", "jpg": " image/jpg", "png": " image/png", "jpeg": " image/jpeg", "ppm": " image/x-portable-pixmap", "html": " text/html", "docx": "application/docx", "ico": "image/x-icon"}
     data = await reader.read(100)
     extension = ""
     control = 0
