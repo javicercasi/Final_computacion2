@@ -48,7 +48,7 @@ async def handle_echo(reader, writer):
 
     #print("EXTENsion", extension, archivo)
     #print("EXT", extension)
-
+    # Conversor Documentos:
     if extension == "docx":
         archivo = pdf_to_word(archivo+".pdf")
 
@@ -56,6 +56,8 @@ async def handle_echo(reader, writer):
         archivo = word_to_pdf(archivo+".docx")
 
     print("ARCGHI", archivo, "ADS", extension )
+
+    # Conversor de Imagenes:
     if extension == "jpg" or extension == "png" or extension == "ppm" or extension == "jpeg" or extension == "BMP" or extension == "gif" or extension == "TIFF" or extension == "EPS":
         archivo = imagenes(lista[3], lista[5], lista[7])
         extension = lista[7]
