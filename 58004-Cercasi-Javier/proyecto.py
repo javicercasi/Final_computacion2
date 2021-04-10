@@ -3,15 +3,14 @@ import asyncio
 from pedido import argumentos
 from convertidor_doc import pdf_to_word , word_to_pdf
 from convertidor_imag import imagenes
-#args = argumentos()
-#argsdocumentroot = "/home/javi/Final_Computacion/58004-Cercasi-Javier"
+from os import remove
 argsdocumentroot = os.getcwd()
 argssize = 10000
 
 
 async def handle_echo(reader, writer):
 
-    dic = {"txt": " text/plain", "pdf":"application/pdf", "jpg": " image/jpg", "png": " image/png", "jpeg": " image/jpeg", "ppm": " image/x-portable-pixmap", "html": " text/html", "docx": "application/docx", "ico": "image/x-icon"}
+    dic = {"txt": " text/plain", "pdf":"application/pdf", "jpg": " image/jpeg", "TIFF": " image/TIFF", "gif": " image/gif", "png": " image/png", "BMP": " image/BMP", "EPS": " image/EPS", "jpeg": " image/jpeg", "ppm": " image/x-portable-pixmap", "html": " text/html", "docx": "application/docx", "ico": "image/x-icon"}
     data = await reader.read(100)
     extension = ""
     control = 0
@@ -24,7 +23,6 @@ async def handle_echo(reader, writer):
         lista = encabezado.split(" ")
         archivo = argsdocumentroot+"/"+lista[3]
         extension = lista[5]
-        #print("LISTAA", lista)
 
     if archivo == (argsdocumentroot + "/"):
         archivo = argsdocumentroot + '/index.html'
@@ -61,11 +59,10 @@ async def handle_echo(reader, writer):
     if extension == "jpg" or extension == "png" or extension == "ppm" or extension == "jpeg" or extension == "BMP" or extension == "gif" or extension == "TIFF" or extension == "EPS":
         archivo = imagenes(lista[3], lista[5], lista[7])
         extension = lista[7]
-    print("SALOIII")
-    #print("ARCHIVO",archivo, "EXTENSION",extension)
+
     header = bytearray(codigo + "\r\nContent-type:" + dic[extension] + "\r\nContent-length:"+str((os.path.getsize(archivo)))+"\r\n\r\n", 'utf8')
     writer.write(header)
-
+    print("Archivoooooo salida:", archivo)
 
     fd = os.open(archivo, os.O_RDONLY)
     fin = True
@@ -77,6 +74,7 @@ async def handle_echo(reader, writer):
             await writer.drain()
             fin = False
     writer.close()
+    remove(str(archivo))
 
 
 
