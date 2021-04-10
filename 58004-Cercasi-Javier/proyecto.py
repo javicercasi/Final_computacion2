@@ -47,37 +47,26 @@ async def handle_echo(reader, writer):
         except:
             extension = archivo.split('.')[1]
 
-    #print("EXTENsion", extension, archivo)
-    #print("EXT", extension)
+
     # Conversor Documentos:
     hijo = futures.ProcessPoolExecutor()
 
     if extension == "docx":
-        funcion = pdf_to_word
-        argumentos = archivo+".pdf"
-
-
-        futuro = hijo.submit(funcion,argumentos)
-        archivo = futuro.result()
-        #archivo = pdf_to_word(archivo+".pdf")
+        futuro = hijo.submit(pdf_to_word, archivo+".pdf")
 
     elif extension == "pdf":
-        archivo = word_to_pdf(archivo+".docx")
-
-    print("ARCGHI", archivo, "ADS", extension )
+        futuro = hijo.submit(word_to_pdf, archivo+".docx")
 
     # Conversor de Imagenes:
     if extension == "jpg" or extension == "png" or extension == "ppm" or extension == "jpeg" or extension == "BMP" or extension == "gif" or extension == "TIFF" or extension == "EPS":
-        archivo = imagenes(lista[3], lista[5], lista[7])
+        futuro = hijo.submit(imagenes, lista[3], lista[5], lista[7])
         extension = lista[7]
     
-    #hilo = threading.Thread(target=funcion, args=(argumentos,))
-    #hilo.start()
-    #hilo.join()
+    if extension != "html" and extension != "ico":
+        archivo = futuro.result()
 
     header = bytearray(codigo + "\r\nContent-type:" + dic[extension] + "\r\nContent-length:"+str((os.path.getsize(archivo)))+"\r\n\r\n", 'utf8')
     writer.write(header)
-    print("Archivoooooo salida:", archivo)
 
     fd = os.open(archivo, os.O_RDONLY)
     fin = True
