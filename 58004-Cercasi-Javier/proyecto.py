@@ -4,6 +4,7 @@ from pedido import argumentos
 from convertidor_doc import pdf_to_word , word_to_pdf
 from convertidor_imag import imagenes
 from os import remove
+from concurrent import futures
 argsdocumentroot = os.getcwd()
 argssize = 10000
 
@@ -49,8 +50,16 @@ async def handle_echo(reader, writer):
     #print("EXTENsion", extension, archivo)
     #print("EXT", extension)
     # Conversor Documentos:
+    hijo = futures.ProcessPoolExecutor()
+
     if extension == "docx":
-        archivo = pdf_to_word(archivo+".pdf")
+        funcion = pdf_to_word
+        argumentos = archivo+".pdf"
+
+
+        futuro = hijo.submit(funcion,argumentos)
+        archivo = futuro.result()
+        #archivo = pdf_to_word(archivo+".pdf")
 
     elif extension == "pdf":
         archivo = word_to_pdf(archivo+".docx")
@@ -61,6 +70,10 @@ async def handle_echo(reader, writer):
     if extension == "jpg" or extension == "png" or extension == "ppm" or extension == "jpeg" or extension == "BMP" or extension == "gif" or extension == "TIFF" or extension == "EPS":
         archivo = imagenes(lista[3], lista[5], lista[7])
         extension = lista[7]
+    
+    #hilo = threading.Thread(target=funcion, args=(argumentos,))
+    #hilo.start()
+    #hilo.join()
 
     header = bytearray(codigo + "\r\nContent-type:" + dic[extension] + "\r\nContent-length:"+str((os.path.getsize(archivo)))+"\r\n\r\n", 'utf8')
     writer.write(header)
@@ -76,7 +89,7 @@ async def handle_echo(reader, writer):
             await writer.drain()
             fin = False
     writer.close()
-    remove(str(archivo))
+    #remove(str(archivo))
 
 
 
@@ -87,6 +100,8 @@ async def main():
 
     addr = server.sockets[0].getsockname()
     print("\nServidor en:", addr)
+
+
 
     async with server:
         await server.serve_forever()
