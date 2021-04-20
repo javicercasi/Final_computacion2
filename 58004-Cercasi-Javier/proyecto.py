@@ -5,6 +5,7 @@ from convertidor_doc import pdf_to_word , word_to_pdf
 from convertidor_imag import imagenes
 from os import remove
 from concurrent import futures
+import queue
 argsdocumentroot = os.getcwd()
 argssize = 10000
 
