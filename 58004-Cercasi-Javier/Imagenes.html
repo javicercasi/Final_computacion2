@@ -12,32 +12,10 @@
     
         <h1>Conversor de Imagenes:</h1>
         <p></p>
-        <form action="/">
-            <p>Nombre del Archivo a convertir: <input type="text" name="nombre" size="40" required placeholder="Escriba el nombre sin formato"></p>
-            <p>Formato de Entrada:
-              <input type="radio" name="formato" value="png" required> png
-              <input type="radio" name="formato" value="jpg" required> jpg
-              <input type="radio" name="formato" value="jpeg" required> jpeg
-              <input type="radio" name="formato" value="ppm" required> ppm
-              <input type="radio" name="formato" value="BMP" required> bmp
-              <input type="radio" name="formato" value="EPS" required> eps
-              <input type="radio" name="formato" value="gif" required> gif
-              <input type="radio" name="formato" value="TIFF" required> tiff
-            </p>
-            <p>Formato de Salida:
-              <input type="radio" name="output" value="png" required> png
-              <input type="radio" name="output" value="jpg" required> jpg
-              <input type="radio" name="output" value="jpeg" required> jpeg
-              <input type="radio" name="output" value="ppm" required> ppm
-              <input type="radio" name="output" value="BMP" required> bmp
-              <input type="radio" name="output" value="EPS" required> eps
-              <input type="radio" name="output" value="gif" required> gif
-              <input type="radio" name="output" value="TIFF" required> tiff
-            </p>
-            <p>
-              <input type="submit" value="Enviar">
-              <input type="reset" value="Borrar">
-            </p>
+          <form method="post" enctype="multipart/form-data">
+            <input id="fileUpload" type="file" name="Archivo_Subido"/>
+            <br>
+            <input type="submit" value="Subir Archivo" name="submit" onclick="notify();"/>
           </form>
     </body>
 </html>

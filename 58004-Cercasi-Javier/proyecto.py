@@ -4,6 +4,7 @@ from pedido import argumentos
 from convertidor_doc import pdf_to_word , word_to_pdf
 from convertidor_imag import imagenes
 from os import remove
+import array
 import queue, threading
 argsdocumentroot = os.getcwd()
 argssize = 10000
@@ -12,10 +13,49 @@ argssize = 10000
 async def handle_echo(reader, writer):
 
     dic = {"txt": " text/plain", "pdf":"application/pdf", "jpg": " image/jpeg", "TIFF": " image/TIFF", "gif": " image/gif", "png": " image/png", "BMP": " image/BMP", "EPS": " image/EPS", "jpeg": " image/jpeg", "ppm": " image/x-portable-pixmap", "html": " text/html", "docx": "application/docx", "ico": "image/x-icon"}
-    data = await reader.read(100)
+    fin = True
+
+    #data = await reader.read(800000)
+    #print(type(data))
+    data = b''
+    while True:
+        pedido = await reader.read(1024)
+        data += pedido
+        if len(pedido) < 1024:
+            break
+    fin = True
     extension = ""
     control = 0
-    encabezado = data.decode().splitlines()[0]  # GET /imagen.jpg
+    #image/x-portable-pixmap\r\n\r\n
+    """recortado = str(data).split('image/x-portable-pixmap')[1] #.split("Content-Type: image/jpeg")[1]
+    #n = recortado.find(str(b'\r\n\r\n'))
+    recortado2 = recortado[8:]
+    print( "recortadoooooooooooo2 es",recortado2)
+    #print("REcortadoooo1 es", recortado)
+    print("TERMINEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
+    
+    
+    archi1 = open("datos.ppm","wb")
+    for elemento in recortado2:
+        archi1.write(bytearray(elemento, "utf-8"))"""
+    
+    
+    #    lista.append(chr(elemento))
+    #image = array.array('B', lista)
+    #image.tofile(archi1)
+    
+    #archi1 = open("datos.ppm","wb")
+    #for elemento in list(recortado2):
+    #    archi1.write((bytearray(elemento, "utf-8")))
+    
+    #archi1 = open("datos.jpg","wb")
+    #archi1.write((bytearray(recortado2, "utf-8")))  
+    #archi1.close() 
+    #print(enca)
+    #try:
+    encabezado = data.decode().splitlines()[0] # GET /imagen.jpg
+    #except:
+    #    pass
     archivo = argsdocumentroot + encabezado.split()[1].split("?")[0]
     addr = writer.get_extra_info('peername')
 
@@ -28,11 +68,11 @@ async def handle_echo(reader, writer):
     if archivo == (argsdocumentroot + "/"):
         archivo = argsdocumentroot + '/index.html'
 
-    #if os.path.isfile(archivo) is False and os.path.isfile(archivo+"."+extension) is False :
-    #    archivo = argsdocumentroot + '/400error.html'
-    #    codigo = "HTTP/1.1 400 File Not Found"
-    #    control = 1
-    #    extension = "html"
+    if os.path.isfile(archivo) is False and os.path.isfile(archivo+"."+extension) is False :
+        archivo = argsdocumentroot + '/400error.html'
+        codigo = "HTTP/1.1 400 File Not Found"
+        control = 1
+        extension = "html"
 
     if len(encabezado.split()[1].split("?")) != 1:
         archivo = argsdocumentroot + '/500error.html'
@@ -81,7 +121,6 @@ async def handle_echo(reader, writer):
             fin = False
     writer.close()
     #remove(str(archivo))
-
 
 
 async def main():

@@ -12,10 +12,34 @@ argssize = 10000
 async def handle_echo(reader, writer):
 
     dic = {"txt": " text/plain", "pdf":"application/pdf", "jpg": " image/jpeg", "TIFF": " image/TIFF", "gif": " image/gif", "png": " image/png", "BMP": " image/BMP", "EPS": " image/EPS", "jpeg": " image/jpeg", "ppm": " image/x-portable-pixmap", "html": " text/html", "docx": "application/docx", "ico": "image/x-icon"}
-    data = await reader.read(100)
+    fin = True
+
+    """while fin is True:
+        data = await reader.read(10000)
+        if len(data) < 10000:
+            #data = await reader.read(10000)
+            fin = False"""
+    #data = await reader.read(500000)
+    data = b''
+    while True:
+        request = await reader.read(1024)
+        data += request
+        if len(request) < 1024:
+            break
+    fin = True
     extension = ""
     control = 0
-    encabezado = data.decode().splitlines()[0]  # GET /imagen.jpg
+    #print(data)
+    enca = str(data) #.spli t("Content-Type: ")
+    
+    #enca2 = enca [:"Content-Type: "]
+    print(enca)
+    print("TERMINEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
+    #print(enca)
+    try:
+        encabezado = data.decode().splitlines()[0] # GET /imagen.jpg
+    except:
+        pass
     archivo = argsdocumentroot + encabezado.split()[1].split("?")[0]
     addr = writer.get_extra_info('peername')
 
@@ -81,7 +105,6 @@ async def handle_echo(reader, writer):
             fin = False
     writer.close()
     #remove(str(archivo))
-
 
 
 async def main():
