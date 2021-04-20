@@ -1,19 +1,23 @@
 from pydub import AudioSegment
 from pydub.playback import play
+from concurrent import futures
 
-audio = AudioSegment.from_mp3(r"/home/javi/Final_computacion2/58004-Cercasi-Javier/Boca.mp3")
-#audio.export("boqui.wav", format="wav")
-#reversed_aduio = audio.reverse()
-#reversed_aduio.export("bos.mp3", format="mp3")
-t = 1000
-incio = audio [0:5*t]
-#ultimos = audio[-10000:]
-ultimos = audio[5*t:8*t]
-incio.export("Mix.ogg", format="ogg")
 
-#incio = incio + 10
-#ultimos = ultimos + 20
+def audio(incio, fin):
+    audio = AudioSegment.from_mp3(r"/home/javi/Final_computacion2/58004-Cercasi-Javier/Boca.mp3")
+    t = 1000
+    duracion = int(audio.duration_seconds) + 1
+    incio = audio [0:5*t]
+    ultimos = audio[5*t:8*t]
+    mix = incio + ultimos
+    #mix.export("Mix.mp3", format="mp3")
 
-mix = incio + ultimos
-#mix.export("Mix.mp3", format="mp3")
-play(mix)
+def pensar(a):
+    print("PASEE")
+    #print(a)
+    return(a)
+
+#audio()
+hilos = futures.ThreadPoolExecutor(max_workers=5) #max_workers=3)
+resultado_a_futuro = hilos.map(pensar ,range(0,92,int(92/5)))
+print(list(resultado_a_futuro))
