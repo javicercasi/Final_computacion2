@@ -4,7 +4,7 @@ from pedido import argumentos
 from convertidor_doc import pdf_to_word , word_to_pdf
 from convertidor_imag import imagenes
 from os import remove
-import threading
+import queue, threading
 argsdocumentroot = os.getcwd()
 argssize = 10000
 
@@ -47,31 +47,28 @@ async def handle_echo(reader, writer):
         except:
             extension = archivo.split('.')[1]
 
-    #print("EXTENsion", extension, archivo)
-    #print("EXT", extension)
-    # Conversor Documentos:
 
+    # Conversor Documentos:
+    q = queue.Queue()
 
     if extension == "docx":
-        archivo = pdf_to_word(archivo+".pdf")
-
+        hilo = threading.Thread(target=pdf_to_word, args=(archivo+".pdf", q,))
+    
     elif extension == "pdf":
-        archivo = word_to_pdf(archivo+".docx")
-
-    print("ARCGHI", archivo, "ADS", extension )
+        hilo = threading.Thread(target=word_to_pdf, args=(archivo+".docx", q,))
 
     # Conversor de Imagenes:
     if extension == "jpg" or extension == "png" or extension == "ppm" or extension == "jpeg" or extension == "BMP" or extension == "gif" or extension == "TIFF" or extension == "EPS":
-        archivo = imagenes(lista[3], lista[5], lista[7])
+        hilo = threading.Thread(target=imagenes, args=(lista[3], lista[5], lista[7], q,))
         extension = lista[7]
     
-    #hilo = threading.Thread(target=funcion, args=(argumentos,))
-    #hilo.start()
-    #hilo.join()
+    if extension != "html" and extension != "ico":
+        hilo.start()
+        archivo = q.get()
+        hilo.join()
 
     header = bytearray(codigo + "\r\nContent-type:" + dic[extension] + "\r\nContent-length:"+str((os.path.getsize(archivo)))+"\r\n\r\n", 'utf8')
     writer.write(header)
-    print("Archivoooooo salida:", archivo)
 
     fd = os.open(archivo, os.O_RDONLY)
     fin = True
@@ -83,7 +80,7 @@ async def handle_echo(reader, writer):
             await writer.drain()
             fin = False
     writer.close()
-    remove(str(archivo))
+    #remove(str(archivo))
 
 
 
@@ -94,8 +91,6 @@ async def main():
 
     addr = server.sockets[0].getsockname()
     print("\nServidor en:", addr)
-
-
 
     async with server:
         await server.serve_forever()

@@ -4,8 +4,7 @@ from pedido import argumentos
 from convertidor_doc import pdf_to_word , word_to_pdf
 from convertidor_imag import imagenes
 from os import remove
-from concurrent import futures
-import queue
+import queue, threading
 argsdocumentroot = os.getcwd()
 argssize = 10000
 
@@ -50,21 +49,23 @@ async def handle_echo(reader, writer):
 
 
     # Conversor Documentos:
-    hijo = futures.ProcessPoolExecutor()
+    q = queue.Queue()
 
     if extension == "docx":
-        futuro = hijo.submit(pdf_to_word, archivo+".pdf")
-
+        hilo = threading.Thread(target=pdf_to_word, args=(archivo+".pdf", q,))
+    
     elif extension == "pdf":
-        futuro = hijo.submit(word_to_pdf, archivo+".docx")
+        hilo = threading.Thread(target=word_to_pdf, args=(archivo+".docx", q,))
 
     # Conversor de Imagenes:
     if extension == "jpg" or extension == "png" or extension == "ppm" or extension == "jpeg" or extension == "BMP" or extension == "gif" or extension == "TIFF" or extension == "EPS":
-        futuro = hijo.submit(imagenes, lista[3], lista[5], lista[7])
+        hilo = threading.Thread(target=imagenes, args=(lista[3], lista[5], lista[7], q,))
         extension = lista[7]
     
     if extension != "html" and extension != "ico":
-        archivo = futuro.result()
+        hilo.start()
+        archivo = q.get()
+        hilo.join()
 
     header = bytearray(codigo + "\r\nContent-type:" + dic[extension] + "\r\nContent-length:"+str((os.path.getsize(archivo)))+"\r\n\r\n", 'utf8')
     writer.write(header)
