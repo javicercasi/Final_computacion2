@@ -27,7 +27,7 @@ async def handle_echo(reader, writer):
     extension = ""
     control = 0
     #image/x-portable-pixmap\r\n\r\n
-    """recortado = str(data).split('image/x-portable-pixmap')[1] #.split("Content-Type: image/jpeg")[1]
+    recortado = str(data).split('image/x-portable-pixmap')[1] #.split("Content-Type: image/jpeg")[1]
     #n = recortado.find(str(b'\r\n\r\n'))
     recortado2 = recortado[8:]
     print( "recortadoooooooooooo2 es",recortado2)
@@ -37,8 +37,11 @@ async def handle_echo(reader, writer):
     
     archi1 = open("datos.ppm","wb")
     for elemento in recortado2:
-        archi1.write(bytearray(elemento, "utf-8"))"""
-    
+        pais = bytes(elemento, "ascii")
+        #print("TIPO", type(elemento))
+        archi1.write(pais)
+    #with open('datos.ppm', 'wb') as f:
+    #    f.write(recortado2.encode())
     
     #    lista.append(chr(elemento))
     #image = array.array('B', lista)
@@ -52,10 +55,10 @@ async def handle_echo(reader, writer):
     #archi1.write((bytearray(recortado2, "utf-8")))  
     #archi1.close() 
     #print(enca)
-    #try:
-    encabezado = data.decode().splitlines()[0] # GET /imagen.jpg
-    #except:
-    #    pass
+    try:
+        encabezado = data.decode().splitlines()[0] # GET /imagen.jpg
+    except:
+        pass
     archivo = argsdocumentroot + encabezado.split()[1].split("?")[0]
     addr = writer.get_extra_info('peername')
 
