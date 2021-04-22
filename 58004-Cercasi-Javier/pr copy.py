@@ -25,13 +25,26 @@ async def handle_echo(reader, writer):
         print("ENCA", encabezado)
         if encabezado.split()[0] == "GET":
             archivo = argsdocumentroot + encabezado.split()[1]
-        if encabezado.split()[0] == "POST":
-            data = await reader.read()
-            archi = data.split(b'Content-Type: image/x-portable-pixmap\r\n\r\n')[1]
-            with open('datos.ppm', 'wb') as f:
-                f.write(bytearray(archi))
     except:
         pass  
+    print(encabezado.split()[0])
+    print("\n\n\n\n")#, data)
+    i = 0
+    """try:
+        data = await reader.read()
+        archi = data.split(b'Content-Type: image/x-portable-pixmap\r\n\r\n')[1] #.split(b'\n')
+    except:
+        pass
+
+    #archi1 = open("datos.ppm","wb")
+    #image = array.array('B', archi)
+    #image.tofile(archi1)
+    print(archi)
+    with open('datos.ppm', 'wb') as f:
+        f.write(bytearray(archi))"""
+
+    #Anda bien:
+  
 
 
     if archivo == (argsdocumentroot + "/"):

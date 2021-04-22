@@ -15,32 +15,31 @@ async def handle_echo(reader, writer):
     dic = {"txt": " text/plain", "pdf":"application/pdf", "jpg": " image/jpeg", "TIFF": " image/TIFF", "gif": " image/gif", "png": " image/png", "BMP": " image/BMP", "EPS": " image/EPS", "jpeg": " image/jpeg", "ppm": " image/x-portable-pixmap", "html": " text/html", "docx": "application/docx", "ico": "image/x-icon"}
     fin = True
 
-    #data = await reader.read(800000)
+    data = await reader.read(800000)
     #print(type(data))
-    data = b''
-    while True:
-        pedido = await reader.read(1024)
-        data += pedido
-        if len(pedido) < 1024:
-            break
+    #data = b''
+    #while True:
+    #    pedido = await reader.read(1024)
+    #    data += pedido
+    #    if len(pedido) < 1024:
+    #        break
     fin = True
     extension = ""
     control = 0
     #image/x-portable-pixmap\r\n\r\n
-    recortado = str(data).split('image/x-portable-pixmap')[1] #.split("Content-Type: image/jpeg")[1]
-    #n = recortado.find(str(b'\r\n\r\n'))
-    recortado2 = recortado[8:]
-    print( "recortadoooooooooooo2 es",recortado2)
+    recortado = (data.decode())#.split('image/x-portable-pixmap')#[1]
+    #recortado2 = recortado[8:]
+    print( "recortadoooooooooooo2 es",recortado)
     #print("REcortadoooo1 es", recortado)
     print("TERMINEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
     
     
-    archi1 = open("datos.ppm","wb")
-    for elemento in recortado2:
-        pais = bytes(elemento, "ascii")
+    #archi1 = open("datos.ppm","wb")
+    #for elemento in recortado2:
+    #    pais = bytes(elemento, "ascii")
         #print("TIPO", type(elemento))
-        archi1.write(pais)
-    #with open('datos.ppm', 'wb') as f:
+    #   archi1.write(pais)
+    ##with open('datos.ppm', 'wb') as f:
     #    f.write(recortado2.encode())
     
     #    lista.append(chr(elemento))
@@ -56,7 +55,7 @@ async def handle_echo(reader, writer):
     #archi1.close() 
     #print(enca)
     try:
-        encabezado = data.decode().splitlines()[0] # GET /imagen.jpg
+        encabezado = data.encode().splitlines()[0] # GET /imagen.jpg
     except:
         pass
     archivo = argsdocumentroot + encabezado.split()[1].split("?")[0]

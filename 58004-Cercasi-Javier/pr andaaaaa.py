@@ -9,29 +9,36 @@ argsdocumentroot = os.getcwd()
 async def handle_echo(reader, writer):
 
     dic = {"txt": " text/plain", "jpg": " image/jpeg", "ppm": " image/x-portable-pixmap", "html": " text/html", "pdf": " application/pdf", "ico": "image/x-icon"}
-    
     data = b''
-    fin = True
-    data = await reader.read(100)
-    """while fin is True:
-        pedido = await reader.read(1024)
-        data += pedido
-        if len(pedido) < 1024:
-            fin = False
-    fin = True"""
+    data = await reader.read()
+
+    print("\n\n\n\n",data)
+    i = 0
+    try:
+        archi = data.split(b"image/x-portable-pixmap\r\n\r\n")[1]
+    except:
+        pass
+
+    #archi1 = open("datos.ppm","wb")
+    #image = array.array('B', archi)
+    #image.tofile(archi1)
     
+    with open('datos.ppm', 'wb') as f:
+        f.write(bytearray(archi))
+
+
+
+
+
+
+
+
+    #Anda bien:
     try:
         encabezado = data.decode().splitlines()[0]  # GET /imagen.jpg
-        print("ENCA", encabezado)
-        if encabezado.split()[0] == "GET":
-            archivo = argsdocumentroot + encabezado.split()[1]
-        if encabezado.split()[0] == "POST":
-            data = await reader.read()
-            archi = data.split(b'Content-Type: image/x-portable-pixmap\r\n\r\n')[1]
-            with open('datos.ppm', 'wb') as f:
-                f.write(bytearray(archi))
+        archivo = argsdocumentroot + encabezado.split()[1]
     except:
-        pass  
+        pass    
 
 
     if archivo == (argsdocumentroot + "/"):
