@@ -3,12 +3,22 @@ import asyncio
 import array
 from os import remove
 argsdocumentroot = os.getcwd()
+from PIL import Image
 
+
+def imagenes(output):
+    formato = "jpg"
+    entrada = "datos.jpg"
+    #print("LLEGUEE", entrada+'.'+formato, entrada+'.'+output)
+    im = Image.open("datos.jpg")
+    rgb_im = im.convert('RGB')
+    rgb_im.save("gato."+output, quality=95)
+    return("gato."+output)
 
 
 async def handle_echo(reader, writer):
 
-    dic = {"txt": " text/plain", "jpg": " image/jpeg", "ppm": " image/x-portable-pixmap", "html": " text/html", "pdf": " application/pdf", "ico": "image/x-icon"}
+    dic = {"txt": " text/plain", "pdf":"application/pdf", "jpg": " image/jpeg", "TIFF": " image/TIFF", "gif": " image/gif", "png": " image/png", "BMP": " image/BMP", "EPS": " image/EPS", "jpeg": " image/jpeg", "ppm": " image/x-portable-pixmap", "html": " text/html", "docx": "application/docx", "ico": "image/x-icon"}
     
     data = b''
     fin = True
@@ -19,19 +29,26 @@ async def handle_echo(reader, writer):
         if len(pedido) < 1024:
             fin = False
     fin = True"""
-    
-    try:
-        encabezado = data.decode().splitlines()[0]  # GET /imagen.jpg
-        print("ENCA", encabezado)
-        if encabezado.split()[0] == "GET":
-            archivo = argsdocumentroot + encabezado.split()[1]
-        if encabezado.split()[0] == "POST":
-            data = await reader.read()
-            archi = data.split(b'Content-Type: image/x-portable-pixmap\r\n\r\n')[1]
-            with open('datos.ppm', 'wb') as f:
-                f.write(bytearray(archi))
-    except:
-        pass  
+ 
+    encabezado2 = data.decode().splitlines()  # GET /imagen.jpg
+    encabezado = encabezado2[0]
+    print("ENCA", encabezado)
+    if encabezado.split()[0] == "GET":
+        archivo = argsdocumentroot + encabezado.split()[1]
+    if encabezado.split()[0] == "POST":
+
+        data = await reader.read(500000)
+        
+        #print(encabezado2, "\n\n\n\n", data)
+        archi = data.split(b'\r\n\r\n')[3]
+        output = data.split(b"\r\n\r\n")[2].split(b"\r\n")[0]
+        output = output.decode()
+        #print("dataaaaaaaaaa", data, "archiii", archi)
+        print("putttttt",output)
+        with open('datos.ppm', 'wb') as f:
+            f.write(bytearray(archi))
+        #archivo = imagenes(output)
+        archivo = argsdocumentroot + "/datos.ppm"
 
 
     if archivo == (argsdocumentroot + "/"):
@@ -50,11 +67,14 @@ async def handle_echo(reader, writer):
     else:
         extension = archivo.split('.')[1]
         codigo = "HTTP/1.1 200 OK"
+    print("EXTEEEEEEE", archivo, extension)
 
     header = bytearray(codigo + "\r\nContent-type:" +
                        dic[extension] + "\r\nContent-length:"+str((os.path.getsize(archivo)))+"\r\n\r\n", 'utf8')
+    
+    
     writer.write(header)
-
+    print("ARCHIIIIIIII",archivo, "EXTENSION", extension)
     fd = os.open(archivo, os.O_RDONLY)
     body = os.read(fd, os.path.getsize(archivo))
     writer.write(body)
