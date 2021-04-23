@@ -3,9 +3,10 @@ FROM python:3
 RUN git clone https://github.com/javicercasi/Final_computacion2.git
 
 #RUN apt install ffmpeg
-RUN pip freeze > requirementss.txt
 
 WORKDIR /Final_computacion2/58004-Cercasi-Javier
+
+RUN pip freeze > requirementss.txt
 
 RUN pip3 install requests
 
