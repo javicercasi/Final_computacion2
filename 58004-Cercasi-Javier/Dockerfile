@@ -6,7 +6,7 @@ RUN git clone https://github.com/javicercasi/Final_computacion2.git
 WORKDIR /Final_computacion2/58004-Cercasi-Javier
 
 RUN pip freeze > requirementss.txt
-RUN apt install ffmpeg
+#RUN apt install ffmpeg
 
 RUN pip3 install requests
 
