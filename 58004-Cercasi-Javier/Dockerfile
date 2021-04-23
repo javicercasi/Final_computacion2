@@ -11,5 +11,6 @@ RUN pip freeze > requirementss.txt
 RUN pip3 install requests
 
 RUN pip3 install -r requirementss.txt
+RUN pip3 install pdf2docx
 
 CMD ["python3", "./proyecto.py"]
