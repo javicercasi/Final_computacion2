@@ -6,59 +6,24 @@ from convertidor_imag import imagenes
 from os import remove
 import array
 import queue, threading
+from convertidor_audios import audio
 argsdocumentroot = os.getcwd()
 argssize = 10000
 
 
 async def handle_echo(reader, writer):
 
-    dic = {"txt": " text/plain", "pdf":"application/pdf", "jpg": " image/jpeg", "TIFF": " image/TIFF", "gif": " image/gif", "png": " image/png", "BMP": " image/BMP", "EPS": " image/EPS", "jpeg": " image/jpeg", "ppm": " image/x-portable-pixmap", "html": " text/html", "docx": "application/docx", "ico": "image/x-icon"}
+    dic = {"txt": " text/plain", "pdf":"application/pdf", "jpg": " image/jpeg", "TIFF": " image/TIFF", "gif": " image/gif", "png": " image/png", "BMP": " image/BMP", "EPS": " image/EPS", "jpeg": " image/jpeg", "ppm": " image/x-portable-pixmap", "html": " text/html", "docx": "application/docx", "ico": "image/x-icon", "mp3":"audio/mp3", "wav":"audio/wav", "aif":"audio/aif", "flac":"audio/flac", "ogg":"audio/ogg"}
     fin = True
 
     data = await reader.read(800000)
-    #print(type(data))
-    #data = b''
-    #while True:
-    #    pedido = await reader.read(1024)
-    #    data += pedido
-    #    if len(pedido) < 1024:
-    #        break
     fin = True
     extension = ""
     control = 0
-    #image/x-portable-pixmap\r\n\r\n
-    recortado = (data.decode())#.split('image/x-portable-pixmap')#[1]
-    #recortado2 = recortado[8:]
-    print( "recortadoooooooooooo2 es",recortado)
-    #print("REcortadoooo1 es", recortado)
-    print("TERMINEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
-    
-    
-    #archi1 = open("datos.ppm","wb")
-    #for elemento in recortado2:
-    #    pais = bytes(elemento, "ascii")
-        #print("TIPO", type(elemento))
-    #   archi1.write(pais)
-    ##with open('datos.ppm', 'wb') as f:
-    #    f.write(recortado2.encode())
-    
-    #    lista.append(chr(elemento))
-    #image = array.array('B', lista)
-    #image.tofile(archi1)
-    
-    #archi1 = open("datos.ppm","wb")
-    #for elemento in list(recortado2):
-    #    archi1.write((bytearray(elemento, "utf-8")))
-    
-    #archi1 = open("datos.jpg","wb")
-    #archi1.write((bytearray(recortado2, "utf-8")))  
-    #archi1.close() 
-    #print(enca)
-    try:
-        encabezado = data.encode().splitlines()[0] # GET /imagen.jpg
-    except:
-        pass
-    archivo = argsdocumentroot + encabezado.split()[1].split("?")[0]
+
+    encabezado = data.decode().splitlines()[0] # GET /imagen.jpg
+
+    archivo = argsdocumentroot + encabezado.split()[1]
     addr = writer.get_extra_info('peername')
 
     if len(encabezado) > 30:
@@ -90,6 +55,10 @@ async def handle_echo(reader, writer):
             extension = archivo.split('.')[1]
 
 
+    if extension == "ogg" or extension == "mp3" or extension == "wav" or extension == "flac" or extension == "aif":
+        #print("AUDIOOO",archivo+"."+extension, lista[7])
+        archivo = audio(archivo+"."+extension, lista[7])
+
     # Conversor Documentos:
     q = queue.Queue()
 
@@ -104,10 +73,10 @@ async def handle_echo(reader, writer):
         hilo = threading.Thread(target=imagenes, args=(lista[3], lista[5], lista[7], q,))
         extension = lista[7]
     
-    if extension != "html" and extension != "ico":
-        hilo.start()
-        archivo = q.get()
-        hilo.join()
+    #if extension != "html" and extension != "ico":
+    #    hilo.start()
+    #    archivo = q.get()
+    #    hilo.join()
 
     header = bytearray(codigo + "\r\nContent-type:" + dic[extension] + "\r\nContent-length:"+str((os.path.getsize(archivo)))+"\r\n\r\n", 'utf8')
     writer.write(header)
@@ -119,7 +88,10 @@ async def handle_echo(reader, writer):
         writer.write(body)
         if (len(body) != argssize):
             os.close(fd)
-            await writer.drain()
+            try:
+                await writer.drain()
+            except ConnectionResetError:
+                pass
             fin = False
     writer.close()
     #remove(str(archivo))

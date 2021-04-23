@@ -6,14 +6,14 @@ argsdocumentroot = os.getcwd()
 from PIL import Image
 
 
-def imagenes(output):
-    formato = "jpg"
-    entrada = "datos.jpg"
+def imagenes(input, output):
+    #formato = "jpg"
+    #entrada = "datos.jpg"
     #print("LLEGUEE", entrada+'.'+formato, entrada+'.'+output)
-    im = Image.open("datos.jpg")
+    im = Image.open("datos."+input)
     rgb_im = im.convert('RGB')
-    rgb_im.save("gato."+output, quality=95)
-    return("gato."+output)
+    rgb_im.save("datos."+output, quality=95)
+    return("/datos."+output)
 
 
 async def handle_echo(reader, writer):
@@ -32,23 +32,29 @@ async def handle_echo(reader, writer):
  
     encabezado2 = data.decode().splitlines()  # GET /imagen.jpg
     encabezado = encabezado2[0]
-    print("ENCA", encabezado)
+    #print("ENCA", encabezado)
     if encabezado.split()[0] == "GET":
         archivo = argsdocumentroot + encabezado.split()[1]
+        print("ARchivo pedido", archivo)
+    
     if encabezado.split()[0] == "POST":
-
-        data = await reader.read(500000)
         
-        #print(encabezado2, "\n\n\n\n", data)
-        archi = data.split(b'\r\n\r\n')[3]
-        output = data.split(b"\r\n\r\n")[2].split(b"\r\n")[0]
-        output = output.decode()
-        #print("dataaaaaaaaaa", data, "archiii", archi)
-        print("putttttt",output)
-        with open('datos.ppm', 'wb') as f:
-            f.write(bytearray(archi))
-        #archivo = imagenes(output)
-        archivo = argsdocumentroot + "/datos.ppm"
+        while fin is True:
+            pedido = await reader.read(1000000)
+            data += pedido
+            if len(pedido) < 1000000:
+                fin = False
+        fin = True
+
+        entrada = data.split(b" filename=")[1].split(b'\r\n')[0].decode()
+        extension_in = entrada.split(".")[1].split('"')[0]
+        datos = data.split(b'\r\n\r\n')[3]
+        extension_out = data.split(b"\r\n\r\n")[2].split(b"\r\n")[0].decode()
+        print("ENTRADA", entrada, "EXTENSION_ENTRADA:",extension_in, "EXTENSION_OUT", str(extension_out))
+        with open('datos.'+extension_in, 'wb') as f:
+            f.write(bytearray(datos))
+        #archivo = argsdocumentroot + imagenes(extension_in,extension_out)
+        archivo = argsdocumentroot + "/datos."+extension_in
 
 
     if archivo == (argsdocumentroot + "/"):
@@ -67,7 +73,6 @@ async def handle_echo(reader, writer):
     else:
         extension = archivo.split('.')[1]
         codigo = "HTTP/1.1 200 OK"
-    print("EXTEEEEEEE", archivo, extension)
 
     header = bytearray(codigo + "\r\nContent-type:" +
                        dic[extension] + "\r\nContent-length:"+str((os.path.getsize(archivo)))+"\r\n\r\n", 'utf8')
