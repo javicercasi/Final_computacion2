@@ -2,7 +2,7 @@ FROM python:3
 
 RUN git clone https://github.com/javicercasi/Final_computacion2.git
 
-RUN apt install ffmpeg
+RUN sudo apt install ffmpeg
 
 WORKDIR /Final_computacion2/58004-Cercasi-Javier
 
