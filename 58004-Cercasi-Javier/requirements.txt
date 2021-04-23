@@ -1,0 +1,4 @@
+python-docx==0.8.10
+Pillow==7.0.0
+pdf2docx==0.5.1
+pydub==0.25.1

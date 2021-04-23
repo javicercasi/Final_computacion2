@@ -73,10 +73,10 @@ async def handle_echo(reader, writer):
         hilo = threading.Thread(target=imagenes, args=(lista[3], lista[5], lista[7], q,))
         extension = lista[7]
     
-    #if extension != "html" and extension != "ico":
-    #    hilo.start()
-    #    archivo = q.get()
-    #    hilo.join()
+    if extension != "html" and extension != "ico" and extension != "ogg" and extension != "mp3" and extension != "wav" and extension != "flac" :
+        hilo.start()
+        archivo = q.get()
+        hilo.join()
 
     header = bytearray(codigo + "\r\nContent-type:" + dic[extension] + "\r\nContent-length:"+str((os.path.getsize(archivo)))+"\r\n\r\n", 'utf8')
     writer.write(header)

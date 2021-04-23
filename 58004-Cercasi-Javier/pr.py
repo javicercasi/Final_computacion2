@@ -30,8 +30,8 @@ async def handle_echo(reader, writer):
             fin = False
     fin = True"""
  
-    encabezado2 = data.decode().splitlines()  # GET /imagen.jpg
-    encabezado = encabezado2[0]
+    encabezado = data.decode().splitlines()[0] # GET /imagen.jpg
+    #encabezado = encabezado2[0]
     #print("ENCA", encabezado)
     if encabezado.split()[0] == "GET":
         archivo = argsdocumentroot + encabezado.split()[1]
