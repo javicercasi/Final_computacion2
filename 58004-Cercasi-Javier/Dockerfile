@@ -11,8 +11,8 @@ RUN pip3 install ffmpeg
 RUN pip3 install requests
 
 #RUN pip3 install -r requirementss.txt
+RUN apt-get update && apt-get install -y ffmpeg
 RUN pip3 install pdf2docx
 RUN pip3 install pillow
 RUN pip3 install pydub
-RUN apt-get install ffmpeg
-CMD ["python3", "./proyecto.py"]
+CMD ["python3", "./pr.py"]
