@@ -6,6 +6,6 @@ WORKDIR /Final_computacion2/58004-Cercasi Javier
 
 RUN pip3 install requests
 
-RUN pip3 install -r requirements.txt
+RUN pip3 install -r /Final_computacion2/58004-Cercasi Javier/requirements.txt
 
 CMD ["python3", "./proyecto.py"]
