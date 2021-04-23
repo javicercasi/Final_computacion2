@@ -14,5 +14,5 @@ RUN pip3 install requests
 RUN pip3 install pdf2docx
 RUN pip3 install pillow
 RUN pip3 install pydub
-
+RUN apt install ffmpeg
 CMD ["python3", "./proyecto.py"]
