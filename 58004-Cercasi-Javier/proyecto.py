@@ -5,6 +5,7 @@ from convertidor_doc import pdf_to_word , word_to_pdf
 from convertidor_imag import imagenes
 from os import remove
 import array
+import socket
 import queue, threading
 from convertidor_audios import audio
 argsdocumentroot = os.getcwd()
@@ -98,9 +99,9 @@ async def handle_echo(reader, writer):
 
 
 async def main():
-
+    ip = socket.gethostbyname(socket.gethostname())
     server = await asyncio.start_server(
-        handle_echo, ['172.17.0.2'], 5000)
+        handle_echo, [str(ip)], 5000)
 
     addr = server.sockets[0].getsockname()
     print("\nServidor en:", addr)
