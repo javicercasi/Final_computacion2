@@ -39,12 +39,13 @@ async def handle_echo(reader, writer):
     
     if encabezado.split()[0] == "POST":
         
-        while fin is True:
-            pedido = await reader.read(1000000)
-            data += pedido
-            if len(pedido) < 1000000:
-                fin = False
-        fin = True
+        data = await reader.read(1000000)
+        #while fin is True:
+        #    pedido = await reader.read(1000000)
+        #    data += pedido
+        #    if len(pedido) < 1000000:
+        #        fin = False
+        #fin = True
 
         entrada = data.split(b" filename=")[1].split(b'\r\n')[0].decode()
         extension_in = entrada.split(".")[1].split('"')[0]
