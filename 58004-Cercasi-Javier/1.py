@@ -24,13 +24,40 @@ async def handle_echo(reader, writer):
         extension = archivo.split('.')[1]
     
     if encabezado.split()[0] == "POST":
+        #data = (yield from asyncio.wait_for(reader.read,timeout=1.0))
+        #data = await asyncio.wait_for(reader, 1)
+        #data = asyncio.StreamReader(limit=limit, loop=loop)
         
-        data = await reader.read(1000000)
-        extension = "png"
-        print("LENNNNN", len(data.split(b'\r\n\r\n')))
+        #try:
+        #data = await reader.read()
+        #print(data)
+        data = await reader.readuntil(separator=b'--\r\n')
+        print(data)
+        #except asyncio.IncompleteReadError as e:
+            #data = await reader.readexactly(len(e.partial))
+            #print(e.partial, "ACAAAAAAAAAAA", len(e.partial))
+        #    pass
+        fin = True
+        """data = b''
+        while fin is True:
+            try:
+                pedido = await reader.readexactly(1)
+                data += pedido
+            except asyncio.IncompleteReadError:
+                fin = False
+                pass
+        print(data)"""
+        
+        #data = await reader.readuntil(separator=b'name="submit"')
+        #data = asyncio.add_reader(1000000)
+        #data = asyncio.wait_for(reader,timeout=1.0)
+        #print("dataaaaaaaaa", data)
+
+        extension = "mp3"
+        print("LENNNNN", len(data))
         datos = data.split(b'\r\n\r\n')[3]
-        
-        
+
+
         with open('datos.'+extension, 'wb') as f:
             f.write(bytearray(datos))
 
@@ -48,13 +75,15 @@ async def handle_echo(reader, writer):
     writer.write(body)
     os.close(fd)
     await writer.drain()
+    #writer.close()
     writer.close()
+    await writer.wait_closed()
 
 
 async def main():
 
     server = await asyncio.start_server(
-        handle_echo, ['127.0.0.1'], 5000) 
+        handle_echo, host=['127.0.0.1'], port=5000, loop=None, limit=500000) 
 
     addr = server.sockets[0].getsockname()
     print("\nServidor en:", addr)
