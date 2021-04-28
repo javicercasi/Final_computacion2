@@ -50,6 +50,10 @@ async def handle_echo(reader, writer):
         if extension_in == "jpg" or extension_in == "png" or extension_in == "ppm" or extension_in == "jpeg" or extension_in == "BMP" or extension_in == "gif" or extension_in == "TIFF" or extension_in == "EPS":
             hilo = threading.Thread(target=imagenes, args=(entrada, extension_out, q,))
             extension = extension_out
+
+        #if extension == "ogg" or extension == "mp3" or extension == "wav" or extension == "flac" or extension == "aif":
+        #    #print("AUDIOOO",archivo+"."+extension, lista[7])
+        #    archivo = audio(archivo+"."+extension, lista[7])
         
         if extension_in != "html" and extension_in != "ico" and extension_in != "ogg" and extension_in != "mp3" and extension_in != "wav" and extension_in != "flac" :
             hilo.start()

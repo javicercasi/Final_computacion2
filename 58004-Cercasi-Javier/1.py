@@ -26,7 +26,7 @@ async def handle_echo(reader, writer):
     if encabezado.split()[0] == "POST":
 
         data = await reader.readuntil(separator=b'--\r\n')
-        extension = "png"
+        extension = "mp3"
         print("LENNNNN", len(data))
         datos = data.split(b'\r\n\r\n')[3]
 
@@ -53,7 +53,7 @@ async def handle_echo(reader, writer):
 async def main():
 
     server = await asyncio.start_server(
-        handle_echo, host=["127.0.0.1"], port=5000, loop=None, limit=500000) 
+        handle_echo, host=["127.0.0.1"], port=5000, loop=None, limit=1000000) 
 
     addr = server.sockets[0].getsockname()
     print("\nServidor en:", addr)
