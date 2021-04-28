@@ -1,10 +1,11 @@
 from PIL import Image
 
 
-def imagenes(entrada, formato, output, q):
-    print("LLEGUEE", entrada+'.'+formato, entrada+'.'+output)
-    im = Image.open(entrada+'.'+formato)
+def imagenes(entrada, output, q):
+
+    salida = entrada.split(".")[0]+'.'+output
+    im = Image.open(entrada)
     rgb_im = im.convert('RGB')
-    rgb_im.save(entrada+"."+output, quality=95)
-    q.put(entrada+'.'+output)
+    rgb_im.save(salida, quality=95)
+    q.put(salida)
     #return(entrada+'.'+output)

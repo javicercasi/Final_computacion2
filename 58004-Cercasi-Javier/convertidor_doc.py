@@ -9,7 +9,6 @@ def pdf_to_word(entrada_pdf, q):
     cv.convert(salida_doc, start=0, end=None)
     cv.close()
     q.put(salida_doc)
-    #return(salida_doc)
 
 def word_to_pdf(entrada_word, q):
 

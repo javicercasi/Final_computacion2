@@ -99,10 +99,10 @@ async def handle_echo(reader, writer):
 
 
 async def main():
-    ip = '127.0.0.2'
+    ip = '127.0.0.1'
     #ip = socket.gethostbyname(socket.gethostname())
     server = await asyncio.start_server(
-        handle_echo, [str(ip)], 5000)
+        handle_echo, host=[str(ip)], port=5000, loop=None, limit=500000) 
 
     addr = server.sockets[0].getsockname()
     print("\nServidor en:", addr)
