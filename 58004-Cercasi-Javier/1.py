@@ -3,7 +3,8 @@ import asyncio
 import array
 from os import remove
 argsdocumentroot = os.getcwd()
-
+import socket
+a = socket.gethostbyname(socket.gethostname())
 
 async def handle_echo(reader, writer):
 
@@ -53,7 +54,7 @@ async def handle_echo(reader, writer):
         #data = asyncio.wait_for(reader,timeout=1.0)
         #print("dataaaaaaaaa", data)
 
-        extension = "mp3"
+        extension = "ppm"
         print("LENNNNN", len(data))
         datos = data.split(b'\r\n\r\n')[3]
 
@@ -83,10 +84,10 @@ async def handle_echo(reader, writer):
 async def main():
 
     server = await asyncio.start_server(
-        handle_echo, host=['127.0.0.1'], port=5000, loop=None, limit=500000) 
+        handle_echo, host=[str(a)], port=5000, loop=None, limit=500000) 
 
     addr = server.sockets[0].getsockname()
-    print("\nServidor en:", addr)
+    print("\nServidor en:", addr, a)
 
     async with server:
         await server.serve_forever()
