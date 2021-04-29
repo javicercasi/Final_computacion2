@@ -7,8 +7,7 @@ import socket
 
 async def handle_echo(reader, writer):
 
-    dic = {"txt": " text/plain", "pdf":"application/pdf", "jpg": " image/jpeg", "TIFF": " image/TIFF", "gif": " image/gif", "png": " image/png", "BMP": " image/BMP", "EPS": " image/EPS", "jpeg": " image/jpeg", "ppm": " image/x-portable-pixmap", "html": " text/html", "docx": "application/docx", "ico": "image/x-icon"}
-    
+    dic = {"txt": " text/plain", "pdf":"application/pdf", "jpg": " image/jpeg", "TIFF": " image/TIFF", "gif": " image/gif", "png": " image/png", "BMP": " image/BMP", "EPS": " image/EPS", "jpeg": " image/jpeg", "ppm": " image/x-portable-pixmap", "html": " text/html", "docx": "application/docx", "ico": "image/x-icon", "mp3":"audio/mp3", "wav":"audio/wav", "aif":"audio/aif", "flac":"audio/flac", "ogg":"audio/ogg"}
     data = b''
     fin = True
     data = await reader.read(100)
@@ -26,6 +25,7 @@ async def handle_echo(reader, writer):
     if encabezado.split()[0] == "POST":
 
         data = await reader.readuntil(separator=b'--\r\n')
+        #data = await reader.readexactly(10000000)
         extension = "mp3"
         print("LENNNNN", len(data))
         datos = data.split(b'\r\n\r\n')[3]
@@ -53,7 +53,7 @@ async def handle_echo(reader, writer):
 async def main():
 
     server = await asyncio.start_server(
-        handle_echo, host=["127.0.0.1"], port=5000, loop=None, limit=1000000) 
+        handle_echo, host=["127.0.0.1"], port=5000, loop=None, limit=10000000) 
 
     addr = server.sockets[0].getsockname()
     print("\nServidor en:", addr)

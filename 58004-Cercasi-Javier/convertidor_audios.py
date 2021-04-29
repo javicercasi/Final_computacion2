@@ -31,6 +31,6 @@ def audio(direccion, salida):
     mix.export("Mix."+salida, format=salida)
     return("Mix."+salida)
 
-#direccion = "/home/javi/Final_computacion2/58004-Cercasi-Javier/Boca.mp3"
-#salida = "aiff"
+#direccion = "/home/javi/Final_computacion2/58004-Cercasi-Javier/Rain.mp3"
+#salida = "gsm"
 #audio(direccion, salida)

@@ -12,24 +12,17 @@
     
         <h1>Conversor de Audio:</h1>
         <p></p>
-        <form action="/">
-            <p>Nombre del Archivo a convertir: <input type="text" name="nombre" size="40" required placeholder="Escriba el nombre sin formato"></p>
-            <p>Formato de Entrada:
-              <input type="radio" name="formato" value="mp3" required> mp3
-              <input type="radio" name="formato" value="wav" required> wav
-              <input type="radio" name="formato" value="flac" required> flac
-              <input type="radio" name="formato" value="ogg" required> ogg
-            </p>
-            <p>Formato de Salida:
-              <input type="radio" name="output" value="mp3" required> mp3
-              <input type="radio" name="output" value="wav" required> wav
-              <input type="radio" name="output" value="flac" required> flac
-              <input type="radio" name="output" value="ogg" required> ogg
-            </p>
-            <p>
-              <input type="submit" value="Enviar">
-              <input type="reset" value="Borrar">
-            </p>
-          </form>
+        <form method="POST" enctype="multipart/form-data">
+          <p>Formato de Salida:
+            <input type="radio" name="output" value="mp3" required> mp3
+            <input type="radio" name="output" value="flac" required> flac
+            <input type="radio" name="output" value="ogg" required> ogg
+            <input type="radio" name="output" value="wav" required> wav
+          </p>
+          <input id="fileUpload" type="file" name="Archivo_Subido"/>
+          <p>
+          <input type="submit" value="Subir Archivo" name="submit" />
+          </p>
+        </form>
     </body>
 </html>
