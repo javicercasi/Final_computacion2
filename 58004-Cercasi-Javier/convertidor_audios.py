@@ -20,7 +20,10 @@ def audio(direccion, salida):
 
     mix = 0
     global duracion, tema
-    tema = AudioSegment.from_mp3(r"{}".format(direccion))
+    try:
+        tema = AudioSegment.from_mp3(r"{}".format(direccion))
+    except:
+        return("Error")
     duracion = int(tema.duration_seconds) + 1
     #duracion = 23
     hilos = futures.ThreadPoolExecutor(max_workers=5)
@@ -32,5 +35,5 @@ def audio(direccion, salida):
     return("Mix."+salida)
 
 #direccion = "/home/javi/Final_computacion2/58004-Cercasi-Javier/Rain.mp3"
-#salida = "gsm"
+#salida = "wav"
 #audio(direccion, salida)

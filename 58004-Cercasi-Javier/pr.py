@@ -1,6 +1,6 @@
 import os
 import asyncio
-from pedido import argumentos
+#from pedido import argumentos
 from convertidor_doc import pdf_to_word , word_to_pdf
 from convertidor_imag import imagenes
 from os import remove
@@ -39,50 +39,47 @@ async def handle_echo(reader, writer):
 
         # Conversor Documentos:
         q = queue.Queue()
-        try:
 
-            if extension_out == "docx":
-                hilo = threading.Thread(target=pdf_to_word, args=(entrada, q,))
-            
-            elif extension_out == "pdf":
-                hilo = threading.Thread(target=word_to_pdf, args=(entrada, q,))
+        if extension_out == "docx":
+            hilo = threading.Thread(target=pdf_to_word, args=(entrada, q,))
+        
+        elif extension_out == "pdf":
+            hilo = threading.Thread(target=word_to_pdf, args=(entrada, q,))
 
-            # Conversor de Imagenes:
-            if extension_in == "jpg" or extension_in == "png" or extension_in == "ppm" or extension_in == "jpeg" or extension_in == "BMP" or extension_in == "gif" or extension_in == "TIFF" or extension_in == "EPS":
-                hilo = threading.Thread(target=imagenes, args=(entrada, extension_out, q,))
-                extension = extension_out
+        # Conversor de Imagenes:
+        if extension_out == "jpg" or extension_out == "png" or extension_out == "ppm" or extension_out == "jpeg" or extension_out == "BMP" or extension_out == "gif" or extension_out == "TIFF" or extension_out == "EPS":
+            hilo = threading.Thread(target=imagenes, args=(entrada, extension_out, q,))
+            #extension = extension_out
 
-            # Conversor de Audio:
-            if extension_in == "ogg" or extension_in == "mp3" or extension_in == "wav" or extension_in == "flac" or extension_in == "aif":
-                archivo = audio(entrada, extension_out)
-            
-            if extension_in != "html" and extension_in != "ico" and extension_in != "ogg" and extension_in != "mp3" and extension_in != "wav" and extension_in != "flac" :
-                hilo.start()
-                archivo = q.get()
-                hilo.join()
-        except:
-            error = 1
-            #pass
+        # Conversor de Audio:
+        if extension_out == "ogg" or extension_out == "mp3" or extension_out == "wav" or extension_out == "flac" or extension_out == "aif":
+            archivo = audio(entrada, extension_out)
+        
+        if extension_out != "html" and extension_out != "ico" and extension_out != "ogg" and extension_out != "mp3" and extension_out != "wav" and extension_out != "flac" :
+            hilo.start()
+            archivo = q.get()
+            hilo.join()
+            print("ARChivooooooooooo error", archivo)
 
     if archivo == (argsdocumentroot + "/"):
         archivo = argsdocumentroot + '/index.html'
 
+    if archivo == "Error":
+        archivo = argsdocumentroot + '/500error.html'
+        codigo = "HTTP/1.1 500 Internal Server Error"
+        extension_out = "html"
+
     if os.path.isfile(archivo) is False:
         archivo = argsdocumentroot + '/400error.html'
         codigo = "HTTP/1.1 400 File Not Found"
-        extension = "html"
+        extension_out = "html"
     
-    #if error == 1:
-    #    archivo = argsdocumentroot + '/500error.html'
-    #    codigo = "HTTP/1.1 500 Internal Server Error"
-    #    extension = "html"
-
     else:
-        extension = archivo.split('.')[1]
+        extension_out = archivo.split('.')[1]
         codigo = "HTTP/1.1 200 OK"
 
     header = bytearray(codigo + "\r\nContent-type:" +
-                       dic[extension] + "\r\nContent-length:"+str((os.path.getsize(archivo)))+"\r\n\r\n", 'utf8')
+                       dic[extension_out] + "\r\nContent-length:"+str((os.path.getsize(archivo)))+"\r\n\r\n", 'utf8')
     
     
     writer.write(header)
