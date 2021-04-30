@@ -1,12 +1,8 @@
-import os
+import os, asyncio, array, socket, queue, threading
 from os import remove
-import asyncio
 from pedido import argumentos
 from convertidor_doc import pdf_to_word , word_to_pdf
 from convertidor_imag import imagenes
-import array
-import socket
-import queue, threading
 from convertidor_audios import audio
 argsdocumentroot = os.getcwd()
 argssize = 1000000
