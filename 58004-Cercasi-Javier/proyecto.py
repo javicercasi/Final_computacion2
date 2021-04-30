@@ -24,7 +24,7 @@ async def handle_echo(reader, writer):
 
     if encabezado.split()[0] == "GET":
         archivo = argsdocumentroot + encabezado.split()[1]
-        print("ARchivo pedido", archivo)
+        #print("ARchivo pedido", archivo)
     
     if encabezado.split()[0] == "POST":
 
@@ -33,7 +33,6 @@ async def handle_echo(reader, writer):
         extension_in = entrada.split(".")[1]
         datos = data.split(b'\r\n\r\n')[3]
         extension_out = data.split(b"\r\n\r\n")[2].split(b"\r\n")[0].decode()
-        #print("ENTRADA", entrada, "EXTENSION_ENTRADA:",extension_in, "EXTENSION_OUT", str(extension_out))
         with open(entrada, 'wb') as f:
             f.write(bytearray(datos))
 
@@ -60,6 +59,8 @@ async def handle_echo(reader, writer):
             hilo.join()
             #print("ARChivooooooooooo error", archivo)
 
+        print("ENTRADA", archivo, "EXTENSION_ENTRADA:",extension_in, "EXTENSION_OUT", str(extension_out))
+
     if archivo == (argsdocumentroot + "/"):
         archivo = argsdocumentroot + '/index.html'
 
@@ -79,7 +80,8 @@ async def handle_echo(reader, writer):
 
     header = bytearray(codigo + "\r\nContent-type:" +
                        dic[extension_out] + "\r\nContent-length:"+str((os.path.getsize(archivo)))+"\r\n\r\n", 'utf8')
-    
+
+
     
     writer.write(header)
     fd = os.open(archivo, os.O_RDONLY)
@@ -95,15 +97,16 @@ async def handle_echo(reader, writer):
                 pass
             fin = False
     writer.close()
-    if archivo.split(".")[1] != "html" and archivo.split(".")[1] != "py":
+    if archivo.split(".")[1] != "html" and archivo.split(".")[1] != "py" and archivo.split(".")[1] != extension_in:
         remove(archivo)
 
 
 async def main():
-    ip = '127.0.0.1'
+    #ip = '192.168.0.106'
+    ip = "127.0.0.1"
     #ip = socket.gethostbyname(socket.gethostname())
     server = await asyncio.start_server(
-        handle_echo, host=["127.0.0.1"], port=5000, loop=None, limit=50000000) 
+        handle_echo, host=[str(ip)], port=5000, loop=None, limit=50000000) 
 
     addr = server.sockets[0].getsockname()
     print("\nServidor en:", addr)
