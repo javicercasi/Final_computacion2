@@ -33,7 +33,7 @@ async def handle_echo(reader, writer):
         extension_in = entrada.split(".")[1]
         datos = data.split(b'\r\n\r\n')[3]
         extension_out = data.split(b"\r\n\r\n")[2].split(b"\r\n")[0].decode()
-        print("ENTRADA", entrada, "EXTENSION_ENTRADA:",extension_in, "EXTENSION_OUT", str(extension_out))
+        #print("ENTRADA", entrada, "EXTENSION_ENTRADA:",extension_in, "EXTENSION_OUT", str(extension_out))
         with open(entrada, 'wb') as f:
             f.write(bytearray(datos))
 
@@ -49,7 +49,6 @@ async def handle_echo(reader, writer):
         # Conversor de Imagenes:
         if extension_out == "jpg" or extension_out == "png" or extension_out == "ppm" or extension_out == "jpeg" or extension_out == "BMP" or extension_out == "gif" or extension_out == "TIFF" or extension_out == "EPS":
             hilo = threading.Thread(target=imagenes, args=(entrada, extension_out, q,))
-            #extension = extension_out
 
         # Conversor de Audio:
         if extension_out == "ogg" or extension_out == "mp3" or extension_out == "wav" or extension_out == "flac" or extension_out == "aif":
@@ -59,7 +58,7 @@ async def handle_echo(reader, writer):
             hilo.start()
             archivo = q.get()
             hilo.join()
-            print("ARChivooooooooooo error", archivo)
+            #print("ARChivooooooooooo error", archivo)
 
     if archivo == (argsdocumentroot + "/"):
         archivo = argsdocumentroot + '/index.html'
