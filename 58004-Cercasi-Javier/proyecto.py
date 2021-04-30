@@ -95,7 +95,7 @@ async def handle_echo(reader, writer):
                 pass
             fin = False
     writer.close()
-    if extension_out != "html" or extension_out != "py" or extension_out != "ico":
+    if archivo.split(".")[1] != "html" and archivo.split(".")[1] != "py":
         remove(archivo)
 
 
