@@ -1,9 +1,9 @@
 import os
+from os import remove
 import asyncio
 from pedido import argumentos
 from convertidor_doc import pdf_to_word , word_to_pdf
 from convertidor_imag import imagenes
-from os import remove
 import array
 import socket
 import queue, threading
@@ -95,6 +95,8 @@ async def handle_echo(reader, writer):
                 pass
             fin = False
     writer.close()
+    if extension_out != "html" or extension_out != "py" or extension_out != "ico":
+        remove(archivo)
 
 
 async def main():
