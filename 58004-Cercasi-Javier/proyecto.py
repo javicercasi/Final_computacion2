@@ -25,6 +25,7 @@ async def handle_echo(reader, writer):
     if encabezado.split()[0] == "POST":
 
         data = await reader.readuntil(separator=b'--\r\n')
+        #print("DATAAAAAAA",data)
         entrada = data.split(b" filename=")[1].split(b'\r\n')[0].split(b'"')[1].decode()
         extension_in = entrada.split(".")[1]
         datos = data.split(b'\r\n\r\n')[3]
@@ -93,8 +94,8 @@ async def handle_echo(reader, writer):
                 pass
             fin = False
     writer.close()
-    if archivo.split(".")[1] != "html" and archivo.split(".")[1] != "py" and archivo.split(".")[1] != extension_in:
-        remove(archivo)
+    #if archivo.split(".")[1] != "html" and archivo.split(".")[1] != "py" and archivo.split(".")[1] != extension_in:
+    #    remove(archivo)
 
 
 async def main():
