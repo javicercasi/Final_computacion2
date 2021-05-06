@@ -24,7 +24,6 @@ async def handle_echo(reader, writer):
     
     if encabezado.split()[0] == "POST":
 
-        
         if (b"User-Agent: curl") in data:
             data = await reader.readuntil(separator=b'--\r\n')
             datos = data.split(b'\r\n\r\n')[2]
@@ -101,8 +100,10 @@ async def handle_echo(reader, writer):
                 pass
             fin = False
     writer.close()
+    #print("EL archiiiiiii es", archivo)
     if archivo.split(".")[1] != "html" and archivo.split(".")[1] != "py" and extension_out != extension_in:
         remove(archivo)
+        remove(entrada)
 
 
 async def main():
