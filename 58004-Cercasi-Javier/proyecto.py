@@ -16,7 +16,11 @@ async def handle_echo(reader, writer):
     data = await reader.read(100)
     error = 0
     print("\n\nLa data es:",data,"\n\n")
-    encabezado = data.decode().splitlines()[0] # GET /imagen.jpg
+    
+    try:
+        encabezado = data.decode().splitlines()[0] # GET /imagen.jpg
+    except:
+        exit()
 
     if encabezado.split()[0] == "GET":
         archivo = argsdocumentroot + encabezado.split()[1]
