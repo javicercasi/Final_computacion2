@@ -41,3 +41,5 @@ def argumentos():
         print("\nDebe ingresar un size mayor a 10kB.\n")
         exit()
     return(args)
+
+#Agregar estas funciones a la guia
