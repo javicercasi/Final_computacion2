@@ -24,39 +24,28 @@ async def handle_echo(reader, writer):
     
     if encabezado.split()[0] == "POST":
 
+        print("DATAAAAAAA",data)
+
+        
+        if (b'User-Agent: curl') in data:
+            print("SI HAYYYYYYYYYYY")
+        else:
+            print("NO HAYYYYYYYYY")
         data = await reader.readuntil(separator=b'--\r\n')
-        #print("DATAAAAAAA",data)
         entrada = data.split(b" filename=")[1].split(b'\r\n')[0].split(b'"')[1].decode()
         extension_in = entrada.split(".")[1]
-        datos = data.split(b'\r\n\r\n')[3]
-        extension_out = data.split(b"\r\n\r\n")[2].split(b"\r\n")[0].decode()
+        #datos = data.split(b'\r\n\r\n')[3]
+        #extension_out = data.split(b"\r\n\r\n")[2].split(b"\r\n")[0].decode()
+        datos = data.split(b'\r\n\r\n')[2]
+        #print(data)
+        part = data.split(b'output=')[1].split(b';')[0].decode()
+        print(part)
+
+        print("Archivo recibido",entrada,"EXTENSION_IN:",extension_in) #, "EXTENSION_OUT",extension_out )
         with open(entrada, 'wb') as f:
             f.write(bytearray(datos))
 
-        # Conversor Documentos:
-        q = queue.Queue()
-
-        if extension_out == "docx":
-            hilo = threading.Thread(target=pdf_to_word, args=(entrada, q,))
-        
-        elif extension_out == "pdf":
-            hilo = threading.Thread(target=word_to_pdf, args=(entrada, q,))
-
-        # Conversor de Imagenes:
-        if extension_out == "jpg" or extension_out == "png" or extension_out == "ppm" or extension_out == "jpeg" or extension_out == "BMP" or extension_out == "gif" or extension_out == "TIFF" or extension_out == "EPS":
-            hilo = threading.Thread(target=imagenes, args=(entrada, extension_out, q,))
-
-        # Conversor de Audio:
-        if extension_out == "ogg" or extension_out == "mp3" or extension_out == "wav" or extension_out == "flac" or extension_out == "aif":
-            archivo = audio(entrada, extension_out)
-        
-        if extension_out != "html" and extension_out != "ico" and extension_out != "ogg" and extension_out != "mp3" and extension_out != "wav" and extension_out != "flac" :
-            hilo.start()
-            archivo = q.get()
-            hilo.join()
-            #print("ARChivooooooooooo error", archivo)
-
-        print("ENTRADA", archivo, "EXTENSION_ENTRADA:",extension_in, "EXTENSION_OUT", str(extension_out))
+        archivo = entrada
 
     if archivo == (argsdocumentroot + "/"):
         archivo = argsdocumentroot + '/index.html'
@@ -76,26 +65,20 @@ async def handle_echo(reader, writer):
         codigo = "HTTP/1.1 200 OK"
 
     header = bytearray(codigo + "\r\nContent-type:" +
-                       dic[extension_out] + "\r\nContent-length:"+str((os.path.getsize(archivo)))+"\r\n\r\n", 'utf8')
+                       dic[extension_in] + "\r\nContent-length:"+str((os.path.getsize(archivo)))+"\r\n\r\n", 'utf8')
 
+    
+    print("ARCHIVO", archivo)
 
     
     writer.write(header)
     fd = os.open(archivo, os.O_RDONLY)
-    fin = True
-    while fin is True:
-        body = os.read(fd, argssize)
-        writer.write(body)
-        if (len(body) != argssize):
-            os.close(fd)
-            try:
-                await writer.drain()
-            except ConnectionResetError:
-                pass
-            fin = False
+    body = os.read(fd, int(os.path.getsize(archivo)))
+    writer.write(body)
+    await writer.drain()
     writer.close()
-    #if archivo.split(".")[1] != "html" and archivo.split(".")[1] != "py" and archivo.split(".")[1] != extension_in:
-    #    remove(archivo)
+    if archivo.split(".")[1] != "html" and archivo.split(".")[1] != "py" and archivo.split(".")[1] != extension_out:
+        remove(archivo)
 
 
 async def main():

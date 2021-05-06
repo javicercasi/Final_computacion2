@@ -24,14 +24,22 @@ async def handle_echo(reader, writer):
     
     if encabezado.split()[0] == "POST":
 
-        data = await reader.readuntil(separator=b'--\r\n')
-        #print("DATAAAAAAA",data)
+        
+        if (b"User-Agent: curl") in data:
+            data = await reader.readuntil(separator=b'--\r\n')
+            datos = data.split(b'\r\n\r\n')[2]
+            extension_out = data.split(b'output=')[1].split(b';')[0].decode()
+        else:
+            data = await reader.readuntil(separator=b'--\r\n')
+            datos = data.split(b'\r\n\r\n')[3]
+            extension_out = data.split(b"\r\n\r\n")[2].split(b"\r\n")[0].decode()
+
         entrada = data.split(b" filename=")[1].split(b'\r\n')[0].split(b'"')[1].decode()
         extension_in = entrada.split(".")[1]
-        datos = data.split(b'\r\n\r\n')[3]
-        extension_out = data.split(b"\r\n\r\n")[2].split(b"\r\n")[0].decode()
+
         with open(entrada, 'wb') as f:
             f.write(bytearray(datos))
+        print("ENTRADA", entrada, "EXTENSION_ENTRADA:",extension_in, "EXTENSION_OUT", str(extension_out))
 
         # Conversor Documentos:
         q = queue.Queue()
@@ -56,7 +64,6 @@ async def handle_echo(reader, writer):
             hilo.join()
             #print("ARChivooooooooooo error", archivo)
 
-        print("ENTRADA", archivo, "EXTENSION_ENTRADA:",extension_in, "EXTENSION_OUT", str(extension_out))
 
     if archivo == (argsdocumentroot + "/"):
         archivo = argsdocumentroot + '/index.html'
@@ -94,8 +101,8 @@ async def handle_echo(reader, writer):
                 pass
             fin = False
     writer.close()
-    #if archivo.split(".")[1] != "html" and archivo.split(".")[1] != "py" and archivo.split(".")[1] != extension_in:
-    #    remove(archivo)
+    if archivo.split(".")[1] != "html" and archivo.split(".")[1] != "py" and extension_out != extension_in:
+        remove(archivo)
 
 
 async def main():
