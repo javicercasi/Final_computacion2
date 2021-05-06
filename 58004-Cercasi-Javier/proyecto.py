@@ -4,6 +4,7 @@ from pedido import argumentos
 from convertidor_doc import pdf_to_word , word_to_pdf
 from convertidor_imag import imagenes
 from convertidor_audios import audio
+#argumentos()
 argsdocumentroot = os.getcwd()
 argssize = 1000000
 
@@ -17,10 +18,11 @@ async def handle_echo(reader, writer):
     error = 0
     print("\n\nLa data es:",data,"\n\n")
     
-    try:
-        encabezado = data.decode().splitlines()[0] # GET /imagen.jpg
-    except:
+    if len(data) == 0:
+        print("paso el errorrrrrrrrr")
         exit()
+
+    encabezado = data.decode().splitlines()[0] # GET /imagen.jpg
 
     if encabezado.split()[0] == "GET":
         archivo = argsdocumentroot + encabezado.split()[1]
