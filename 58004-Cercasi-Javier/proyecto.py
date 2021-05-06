@@ -15,7 +15,7 @@ async def handle_echo(reader, writer):
     fin = True
     data = await reader.read(100)
     error = 0
- 
+    print("\n\nLa data es:",data,"\n\n")
     encabezado = data.decode().splitlines()[0] # GET /imagen.jpg
 
     if encabezado.split()[0] == "GET":
@@ -108,8 +108,8 @@ async def handle_echo(reader, writer):
 
 async def main():
 
-    #ip = "127.0.0.1"
-    ip = socket.gethostbyname(socket.gethostname())
+    ip = "127.0.0.1"
+    #ip = socket.gethostbyname(socket.gethostname())
     server = await asyncio.start_server(
         handle_echo, host=[str(ip)], port=5000, loop=None, limit=50000000) 
 
