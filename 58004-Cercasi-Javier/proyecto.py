@@ -16,13 +16,13 @@ async def handle_echo(reader, writer):
     fin = True
     data = await reader.read(100)
     error = 0
-    print("\n\nLa data es:",data,"\n\n")
+    #print("\n\nLa data es:",data,"\n\n")
     
     if len(data) == 0:
         print("paso el errorrrrrrrrr")
-        exit()
-
-    encabezado = data.decode().splitlines()[0] # GET /imagen.jpg
+        encabezado = "GET /index.html"
+    else:
+        encabezado = data.decode().splitlines()[0] # GET /imagen.jpg
 
     if encabezado.split()[0] == "GET":
         archivo = argsdocumentroot + encabezado.split()[1]
@@ -114,8 +114,8 @@ async def handle_echo(reader, writer):
 
 async def main():
 
-    #ip = "127.0.0.1"
-    ip = socket.gethostbyname(socket.gethostname())
+    ip = "127.0.0.1"
+    #ip = socket.gethostbyname(socket.gethostname())
     server = await asyncio.start_server(
         handle_echo, host=[str(ip)], port=5000, loop=None, limit=50000000) 
 
