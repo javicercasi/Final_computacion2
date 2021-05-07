@@ -110,7 +110,7 @@ async def handle_echo(reader, writer):
 
 
 async def main():
-
+    ip="0.0.0.0"
     #ip = "127.0.0.1"
     ip = socket.gethostbyname(socket.gethostname())
     server = await asyncio.start_server(
