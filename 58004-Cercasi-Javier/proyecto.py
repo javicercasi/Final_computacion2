@@ -5,8 +5,9 @@ from convertidor_doc import pdf_to_word , word_to_pdf
 from convertidor_imag import imagenes
 from convertidor_audios import audio
 #argumentos()
-argsdocumentroot = os.getcwd()
-argssize = 1000000
+#argsdocumentroot = os.getcwd()
+#argssize = 1000000
+args = argumentos()
 
 
 async def handle_echo(reader, writer):
@@ -16,17 +17,14 @@ async def handle_echo(reader, writer):
     fin = True
     data = await reader.read(100)
     error = 0
-    #print("\n\nLa data es:",data,"\n\n")
     
     if len(data) == 0:
-        print("paso el errorrrrrrrrr")
         encabezado = "GET /index.html"
     else:
         encabezado = data.decode().splitlines()[0] # GET /imagen.jpg
 
     if encabezado.split()[0] == "GET":
         archivo = argsdocumentroot + encabezado.split()[1]
-        #print("ARchivo pedido", archivo)
     
     if encabezado.split()[0] == "POST":
 
@@ -67,19 +65,18 @@ async def handle_echo(reader, writer):
             hilo.start()
             archivo = q.get()
             hilo.join()
-            #print("ARChivooooooooooo error", archivo)
 
 
-    if archivo == (argsdocumentroot + "/"):
-        archivo = argsdocumentroot + '/index.html'
+    if archivo == (args.documentroot + "/"):
+        archivo = args.documentroot + '/index.html'
 
     if archivo == "Error":
-        archivo = argsdocumentroot + '/500error.html'
+        archivo = args.documentroot + '/500error.html'
         codigo = "HTTP/1.1 500 Internal Server Error"
         extension_out = "html"
 
     if os.path.isfile(archivo) is False:
-        archivo = argsdocumentroot + '/400error.html'
+        archivo = args.documentroot + '/400error.html'
         codigo = "HTTP/1.1 400 File Not Found"
         extension_out = "html"
     
@@ -96,9 +93,9 @@ async def handle_echo(reader, writer):
     fd = os.open(archivo, os.O_RDONLY)
     fin = True
     while fin is True:
-        body = os.read(fd, argssize)
+        body = os.read(fd, args.size)
         writer.write(body)
-        if (len(body) != argssize):
+        if (len(body) != args.size):
             os.close(fd)
             try:
                 await writer.drain()
@@ -106,7 +103,7 @@ async def handle_echo(reader, writer):
                 pass
             fin = False
     writer.close()
-    #print("EL archiiiiiii es", archivo)
+
     if archivo.split(".")[1] != "html" and archivo.split(".")[1] != "py" and extension_out != extension_in:
         remove(archivo)
         remove(entrada)
@@ -117,7 +114,7 @@ async def main():
     ip = "127.0.0.1"
     #ip = socket.gethostbyname(socket.gethostname())
     server = await asyncio.start_server(
-        handle_echo, host=[str(ip)], port=5000, loop=None, limit=50000000) 
+        handle_echo, host=[str(ip)], port=args.port, loop=None, limit=50000000) 
 
     addr = server.sockets[0].getsockname()
     print("\nServidor en:", addr)
