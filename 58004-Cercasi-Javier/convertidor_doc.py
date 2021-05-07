@@ -16,6 +16,6 @@ def word_to_pdf(entrada_word, q):
 
     salida_pdf = entrada_word.split(".")[0]+'.pdf'
     output = subprocess.check_output(['unoconv', '-f', 'pdf' ,entrada_word])
-    #output = subprocess.check_output(['abiword', '--to=pdf',entrada_word])
+    ##output = subprocess.check_output(['abiword', '--to=pdf',entrada_word])
     #abiword --to=pdf pasos.docx
     q.put(salida_pdf)
