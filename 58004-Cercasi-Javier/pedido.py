@@ -4,7 +4,7 @@ import os
 
 def argumentos():
 
-    parser = argparse.ArgumentParser(usage="\ntp4.py [-h] -d DIR -p PUERTO -s SIZE")
+    parser = argparse.ArgumentParser(usage="\nproyecto.py [-h] -d DIR -p PUERTO -s SIZE")
 
     parser.add_argument('-s', '--size', metavar='SIZE', type=int, default=20000,
                         help="Bloque de escritura maxima para los archivos")
