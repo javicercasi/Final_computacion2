@@ -24,7 +24,7 @@ async def handle_echo(reader, writer):
         encabezado = data.decode().splitlines()[0] # GET /imagen.jpg
 
     if encabezado.split()[0] == "GET":
-        archivo = argsdocumentroot + encabezado.split()[1]
+        archivo = args.documentroot + encabezado.split()[1]
     
     if encabezado.split()[0] == "POST":
 
