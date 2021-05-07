@@ -8,6 +8,7 @@ from convertidor_audios import audio
 #argsdocumentroot = os.getcwd()
 #argssize = 1000000
 args = argumentos()
+adr = ""
 
 
 async def handle_echo(reader, writer):
@@ -17,7 +18,7 @@ async def handle_echo(reader, writer):
     fin = True
     data = await reader.read(100)
     error = 0
-    
+    #print("ESAAAAAA",addr)
     if len(data) == 0:
         encabezado = "GET /index.html"
     else:
@@ -48,10 +49,10 @@ async def handle_echo(reader, writer):
         q = queue.Queue()
 
         if extension_out == "docx":
-            hilo = threading.Thread(target=pdf_to_word, args=(entrada, q,))
+            hilo = threading.Thread(target=pdf_to_word, args=(entrada, q, adr,))
         
         elif extension_out == "pdf":
-            hilo = threading.Thread(target=word_to_pdf, args=(entrada, q,))
+            hilo = threading.Thread(target=word_to_pdf, args=(entrada, q, adr,))
 
         # Conversor de Imagenes:
         if extension_out == "jpg" or extension_out == "png" or extension_out == "ppm" or extension_out == "jpeg" or extension_out == "BMP" or extension_out == "gif" or extension_out == "TIFF" or extension_out == "EPS":
@@ -111,13 +112,15 @@ async def handle_echo(reader, writer):
 
 async def main():
     
+    global adr
     #ip = "127.0.0.1"
     ip = socket.gethostbyname(socket.gethostname())
     server = await asyncio.start_server(
         handle_echo, host=[str(ip)], port=args.port, loop=None, limit=50000000) 
 
     addr = server.sockets[0].getsockname()
-    print("\nServidor en:", addr)
+    adr= "\nServidor en:"+str(addr)
+    print(adr)
 
     async with server:
         await server.serve_forever()
