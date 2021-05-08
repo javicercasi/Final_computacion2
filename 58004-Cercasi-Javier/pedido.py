@@ -21,7 +21,7 @@ def argumentos():
     try:
         if not args.port:
             raise NameError
-        if args.port < 1024 or args.port > 65535:
+        if int(args.port) < 1024 or int(args.port) > 65535:
             raise NameError
     except NameError:
         print("\nDebe ingresar un puerto valido.\n")
@@ -35,7 +35,7 @@ def argumentos():
         exit()
 
     try:
-        if (args.size < 10000):
+        if (int(args.size) < 10000):
             raise ValueError
     except ValueError:
         print("\nDebe ingresar un size mayor a 10kB.\n")
