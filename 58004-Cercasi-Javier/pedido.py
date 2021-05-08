@@ -6,10 +6,10 @@ def argumentos():
 
     parser = argparse.ArgumentParser(usage="\nproyecto.py [-h] -d DIR -p PUERTO -s SIZE")
 
-    parser.add_argument('-s', '--size', metavar='SIZE', type=int, default=20000,
+    parser.add_argument('-s', '--size', metavar='SIZE', type=str, default="20000",
                         help="Bloque de escritura maxima para los archivos")
 
-    parser.add_argument('-p', '--port', metavar='PORT', type=int,
+    parser.add_argument('-p', '--port', metavar='PORT', type=str,
                         help="Puerto en donde espera conexiones nuevas",
                         default=5000)
 

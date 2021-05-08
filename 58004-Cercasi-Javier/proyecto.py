@@ -93,9 +93,9 @@ async def handle_echo(reader, writer):
     fd = os.open(archivo, os.O_RDONLY)
     fin = True
     while fin is True:
-        body = os.read(fd, args.size)
+        body = os.read(fd, int(args.size))
         writer.write(body)
-        if (len(body) != args.size):
+        if (len(body) != int(args.size)):
             os.close(fd)
             try:
                 await writer.drain()
@@ -115,7 +115,7 @@ async def main():
     ip = "127.0.0.1"
     #ip = socket.gethostbyname(socket.gethostname())
     server = await asyncio.start_server(
-        handle_echo, host=[str(ip)], port=args.port, loop=None, limit=50000000) 
+        handle_echo, host=[str(ip)], port=int(args.port), loop=None, limit=50000000) 
 
     addr = server.sockets[0].getsockname()
     adr= "\nServidor en:"+str(addr)
