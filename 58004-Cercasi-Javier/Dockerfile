@@ -10,8 +10,6 @@ RUN apt-get install -y abiword
 
 RUN pip3 install -r requirements.txt
 
-CMD ["python3", "proyecto.py", "-p", "5000", "-s", "20000", "-d", "/Final_computacion2/58004-Cercasi-Javier"]
-
-#CMD ["python3", "./proyecto.py"]
+CMD ["python3", "proyecto.py", "-p", "${port}", "-s", "${size}", "-d", "/Final_computacion2/58004-Cercasi-Javier"]
 
 #docker build -t server .         docker run -t server
