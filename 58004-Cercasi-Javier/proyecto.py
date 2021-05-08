@@ -1,9 +1,9 @@
 import os, asyncio, array, socket, queue, threading
 from os import remove
 from pedido import argumentos
-from convertidor_doc import pdf_to_word , word_to_pdf
-from convertidor_imag import imagenes
-from convertidor_audios import audio
+#from convertidor_doc import pdf_to_word , word_to_pdf
+#from convertidor_imag import imagenes
+#from convertidor_audios import audio
 #argsdocumentroot = os.getcwd()
 #argssize = 1000000
 args = argumentos()
