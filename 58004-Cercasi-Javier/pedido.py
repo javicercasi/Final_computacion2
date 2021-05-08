@@ -17,7 +17,8 @@ def argumentos():
                         help="Directorio donde estan los documentos web")
 
     args = parser.parse_args()
-    print(args.port,args.size)
+    print(args.port,args.size, os.environ("port"))
+    print(os.environ(port))
     try:
         if not args.port:
             raise NameError
