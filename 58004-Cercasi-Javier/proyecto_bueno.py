@@ -8,8 +8,8 @@ from convertidor_audios import audio
 #argssize = 1000000
 args = argumentos()
 adr = ""
-#print(os.environ["Port"], os.environ["Size"], os.environ["HOME"])
-print(os.environ["Port"])
+
+
 async def handle_echo(reader, writer):
 
     dic = {"txt": " text/plain", "pdf":"application/pdf", "jpg": " image/jpeg", "TIFF": " image/TIFF", "gif": " image/gif", "png": " image/png", "BMP": " image/BMP", "EPS": " image/EPS", "jpeg": " image/jpeg", "ppm": " image/x-portable-pixmap", "html": " text/html", "docx": "application/docx", "ico": "image/x-icon", "mp3":"audio/mp3", "wav":"audio/wav", "aif":"audio/aif", "flac":"audio/flac", "ogg":"audio/ogg"}
