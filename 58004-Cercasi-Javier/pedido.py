@@ -18,7 +18,6 @@ def argumentos():
 
     args = parser.parse_args()
     print(args.port,args.size)
-    print(os.environ(port))
     try:
         if not args.port:
             raise NameError
