@@ -15,9 +15,11 @@ def pdf_to_word(entrada_pdf, q, adr):
         q.put("Error")
 
 def word_to_pdf(entrada_word, q, adr):
-
-    salida_pdf = entrada_word.split(".")[0]+'.pdf'
-    output = subprocess.check_output(['abiword', '--to=pdf',entrada_word])
-    os.system ("clear") 
-    print(adr)
-    q.put(salida_pdf)
+    try:
+        salida_pdf = entrada_word.split(".")[0]+'.pdf'
+        output = subprocess.check_output(['abiword', '--to=pdf',entrada_word])
+        os.system ("clear") 
+        print(adr)
+        q.put(salida_pdf)
+    except:
+        q.put("Error")

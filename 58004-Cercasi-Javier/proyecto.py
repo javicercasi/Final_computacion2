@@ -4,7 +4,6 @@ from pedido import argumentos
 from convertidor_doc import pdf_to_word , word_to_pdf
 from convertidor_imag import imagenes
 from convertidor_audios import audio
-#argumentos()
 #argsdocumentroot = os.getcwd()
 #argssize = 1000000
 args = argumentos()
@@ -18,7 +17,7 @@ async def handle_echo(reader, writer):
     fin = True
     data = await reader.read(100)
     error = 0
-    #print("ESAAAAAA",addr)
+
     if len(data) == 0:
         encabezado = "GET /index.html"
     else:
@@ -40,10 +39,10 @@ async def handle_echo(reader, writer):
 
         entrada = data.split(b" filename=")[1].split(b'\r\n')[0].split(b'"')[1].decode()
         extension_in = entrada.split(".")[1]
+        print("Archivo enviado:", entrada, "Extension de entrada:",extension_in, "Extension Solicitada:", str(extension_out))
 
         with open(entrada, 'wb') as f:
             f.write(bytearray(datos))
-        print("ENTRADA", entrada, "EXTENSION_ENTRADA:",extension_in, "EXTENSION_OUT", str(extension_out))
 
         # Conversor Documentos:
         q = queue.Queue()
