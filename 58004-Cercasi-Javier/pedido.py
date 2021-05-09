@@ -11,13 +11,13 @@ def argumentos():
 
     parser.add_argument('-p', '--port', metavar='PORT', type=str,
                         help="Puerto en donde espera conexiones nuevas",
-                        default=5000)
+                        default="5000")
 
     parser.add_argument('-d', '--documentroot', metavar='DIR', type=str,
                         help="Directorio donde estan los documentos web")
 
     args = parser.parse_args()
-    print(args.port,args.size)
+    print(args.port, args.size)
     try:
         if not args.port:
             raise NameError
