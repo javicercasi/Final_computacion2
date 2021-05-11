@@ -9,8 +9,7 @@ WORKDIR /Final_computacion2/58004-Cercasi-Javier
 #RUN apt-get install -y abiword
 
 #RUN pip3 install -r requirements.txt
-ARG PORTT
-ARG SIZEE
-CMD ["python3", "proyecto.py", "-p", "${PORTT}", "-s", "${SIZEE}", "-d", "/Final_computacion2/58004-Cercasi-Javier"]
+
+CMD [ "sh","-c", "python3 proyecto.py -p ${PORT} -s ${SIZE} -d /Final_computacion2/58004-Cercasi-Javier"]
 
 #docker build -t server .         docker run -t server
