@@ -83,17 +83,12 @@ async def handle_echo(reader, writer):
         extension_out = archivo.split('.')[1]
         codigo = "HTTP/1.1 200 OK"
 
-    #if extension_out != "html" and extension_out != "ico":
-    #    datos ="""<button type="button" onclick="javascript:void(window.open('gato.png'));">Ver Archivo</button>"""
-        #archivo = "boton.html"
-        #extension_out == "html"
-        #with open(archivo, 'w') as f:
-        #    f.write(datos)
-    header = bytearray(codigo+ "\r\nContent-type:" +
-                    "text/html" + "\r\nContent-length:"+str((os.path.getsize(archivo)))+"\r\n\r\n", 'utf8')
+    if extension_out != "htm":
+    
+        header = bytearray(codigo+ "\r\nContent-type:" +
+                        dic[extension_out] + "\r\nContent-length:"+str((os.path.getsize(archivo)))+"\r\n\r\n", 'utf8')
 
-    writer.write(header)
-    if extension_out == "html":
+        writer.write(header)
         fd = os.open(archivo, os.O_RDONLY)
         fin = True
         while fin is True:
@@ -107,15 +102,7 @@ async def handle_echo(reader, writer):
                     pass
                 fin = False
         writer.close()
-    else:
-        
-        datos ="""<button type="button" onclick="javascript:void(window.open('gato.png'));">Ver Archivo</button>"""
-        writer.write(bytearray(datos, 'utf8'))
-        await writer.drain()
-        writer.close()
-
-        #archivo = "boton.html"
-        #extension_out == "html"
+        print(archivo)
     #if archivo.split(".")[1] != "html" and archivo.split(".")[1] != "py" and extension_out != extension_in:
     #    remove(archivo)
     #    remove(entrada)

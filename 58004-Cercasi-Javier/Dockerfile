@@ -11,5 +11,3 @@ WORKDIR /Final_computacion2/58004-Cercasi-Javier
 #RUN pip3 install -r requirements.txt
 
 CMD [ "sh","-c", "python3 proyecto.py -p ${PORT} -s ${SIZE} -d /Final_computacion2/58004-Cercasi-Javier"]
-
-#docker build -t server .         docker run -t server

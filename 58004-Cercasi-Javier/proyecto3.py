@@ -83,36 +83,30 @@ async def handle_echo(reader, writer):
         extension_out = archivo.split('.')[1]
         codigo = "HTTP/1.1 200 OK"
 
-    #if extension_out != "html" and extension_out != "ico":
-    #    datos ="""<button type="button" onclick="javascript:void(window.open('gato.png'));">Ver Archivo</button>"""
-        #archivo = "boton.html"
-        #extension_out == "html"
-        #with open(archivo, 'w') as f:
-        #    f.write(datos)
     header = bytearray(codigo+ "\r\nContent-type:" +
-                    "text/html" + "\r\nContent-length:"+str((os.path.getsize(archivo)))+"\r\n\r\n", 'utf8')
+                    dic[extension_out] + "\r\nContent-length:"+str((os.path.getsize(archivo)))+"\r\n\r\n", 'utf8')
 
     writer.write(header)
-    if extension_out == "html":
-        fd = os.open(archivo, os.O_RDONLY)
-        fin = True
-        while fin is True:
-            body = os.read(fd, int(args.size))
-            writer.write(body)
-            if (len(body) != int(args.size)):
-                os.close(fd)
-                try:
-                    await writer.drain()
-                except ConnectionResetError:
-                    pass
-                fin = False
-        writer.close()
-    else:
+    #if extension_out == "html":
+    fd = os.open(archivo, os.O_RDONLY)
+    fin = True
+    while fin is True:
+        body = os.read(fd, int(args.size))
+        writer.write(body)
+        if (len(body) != int(args.size)):
+            os.close(fd)
+            try:
+                await writer.drain()
+            except ConnectionResetError:
+                pass
+            fin = False
+    writer.close()
+    """else:
         
-        datos ="""<button type="button" onclick="javascript:void(window.open('gato.png'));">Ver Archivo</button>"""
-        writer.write(bytearray(datos, 'utf8'))
+        #datos =<button type="button" onclick="javascript:void(window.open('/Final_computacion2/58004-Cercasi-Javier/gato.png'));">Ver Archivo</button>
+        writer.write(datos)
         await writer.drain()
-        writer.close()
+        writer.close()"""
 
         #archivo = "boton.html"
         #extension_out == "html"
@@ -124,7 +118,8 @@ async def handle_echo(reader, writer):
 async def main():
     
     global adr
-    ip = "127.0.0.1"
+    #ip = "127.0.0.1"
+    ip = "192.168.0.106"
     #ip = socket.gethostbyname(socket.gethostname())
     server = await asyncio.start_server(
         handle_echo, host=[str(ip)], port=int(args.port), loop=None, limit=50000000) 

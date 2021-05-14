@@ -23,9 +23,10 @@
               <input type="radio" name="output" value="gif" required> gif
               <input type="radio" name="output" value="TIFF" required> tiff
             </p>
-            <input id="fileUpload" type="file" name="Archivo_Subido" required/>
+            <input id="fileUpload" type="file" name="Archivo_Subido" required onclick="javascript:function exportar(){window.open('gato.png')};"/>
             <p>
-            <input type="submit" value="Subir Archivo" name="submit" required onclick="notify();"/> 
+            <input type="submit" value="Subir Archivo" name="submit" required onclick="notify();"/>
+            <input type="button" onclick="location.href='http://192.168.0.106:5000/gato.png';" value="Go to Google"/> 
             </p>
           </form>
     </body>
