@@ -65,6 +65,8 @@ async def handle_echo(reader, writer):
             hilo.start()
             archivo = q.get()
             hilo.join()
+        print("ARCHI", archivo, "entradaaa:", entrada)
+
 
 
     if archivo == (args.documentroot + "/"):
@@ -103,9 +105,10 @@ async def handle_echo(reader, writer):
             fin = False
     writer.close()
 
-    if archivo.split(".")[1] != "html" and archivo.split(".")[1] != "py" and extension_out != extension_in:
+    if archivo.split(".")[1] != "html" and archivo.split(".")[1] != "py":
         remove(archivo)
-        remove(entrada)
+        if extension_in != extension_out:
+            remove(entrada)
 
 
 async def main():
