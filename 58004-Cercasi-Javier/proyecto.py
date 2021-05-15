@@ -9,6 +9,7 @@ from convertidor_audios import audio
 args = argumentos()
 adr = ""
 
+
 async def handle_echo(reader, writer):
 
     dic = {"txt": " text/plain", "pdf":"application/pdf", "jpg": " image/jpeg", "TIFF": " image/TIFF", "gif": " image/gif", "png": " image/png", "BMP": " image/BMP", "EPS": " image/EPS", "jpeg": " image/jpeg", "ppm": " image/x-portable-pixmap", "html": " text/html", "docx": "application/docx", "ico": "image/x-icon", "mp3":"audio/mp3", "wav":"audio/wav", "aif":"audio/aif", "flac":"audio/flac", "ogg":"audio/ogg"}
@@ -83,42 +84,28 @@ async def handle_echo(reader, writer):
         extension_out = archivo.split('.')[1]
         codigo = "HTTP/1.1 200 OK"
 
-    #if extension_out != "html" and extension_out != "ico":
-    #    datos ="""<button type="button" onclick="javascript:void(window.open('gato.png'));">Ver Archivo</button>"""
-        #archivo = "boton.html"
-        #extension_out == "html"
-        #with open(archivo, 'w') as f:
-        #    f.write(datos)
-    header = bytearray(codigo+ "\r\nContent-type:" +
-                    "text/html" + "\r\nContent-length:"+str((os.path.getsize(archivo)))+"\r\n\r\n", 'utf8')
+    header = bytearray(codigo + "\r\nContent-type:" +
+                       dic[extension_out] + "\r\nContent-length:"+str((os.path.getsize(archivo)))+"\r\n\r\n", 'utf8')
 
+    
     writer.write(header)
-    if extension_out == "html":
-        fd = os.open(archivo, os.O_RDONLY)
-        fin = True
-        while fin is True:
-            body = os.read(fd, int(args.size))
-            writer.write(body)
-            if (len(body) != int(args.size)):
-                os.close(fd)
-                try:
-                    await writer.drain()
-                except ConnectionResetError:
-                    pass
-                fin = False
-        writer.close()
-    else:
-        
-        datos ="""<button type="button" onclick="javascript:void(window.open('gato.png'));">Ver Archivo</button>"""
-        writer.write(bytearray(datos, 'utf8'))
-        await writer.drain()
-        writer.close()
+    fd = os.open(archivo, os.O_RDONLY)
+    fin = True
+    while fin is True:
+        body = os.read(fd, args.size)
+        writer.write(body)
+        if (len(body) != args.size):
+            os.close(fd)
+            try:
+                await writer.drain()
+            except ConnectionResetError:
+                pass
+            fin = False
+    writer.close()
 
-        #archivo = "boton.html"
-        #extension_out == "html"
-    #if archivo.split(".")[1] != "html" and archivo.split(".")[1] != "py" and extension_out != extension_in:
-    #    remove(archivo)
-    #    remove(entrada)
+    if archivo.split(".")[1] != "html" and archivo.split(".")[1] != "py" and extension_out != extension_in:
+        remove(archivo)
+        remove(entrada)
 
 
 async def main():
@@ -127,7 +114,7 @@ async def main():
     ip = "127.0.0.1"
     #ip = socket.gethostbyname(socket.gethostname())
     server = await asyncio.start_server(
-        handle_echo, host=[str(ip)], port=int(args.port), loop=None, limit=50000000) 
+        handle_echo, host=[str(ip)], port=args.port, loop=None, limit=50000000) 
 
     addr = server.sockets[0].getsockname()
     adr= "\nServidor en:"+str(addr)

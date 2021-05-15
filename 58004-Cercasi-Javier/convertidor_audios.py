@@ -13,7 +13,6 @@ def hilo(cota):
     if superior > duracion or superior == duracion - 1:
         superior = duracion
     parte = tema[anterior*t:superior*t]
-    #parte = (anterior,superior)
     return (parte)
 
 def audio(direccion, salida):
@@ -25,15 +24,9 @@ def audio(direccion, salida):
     except:
         return("Error")
     duracion = int(tema.duration_seconds) + 1
-    #duracion = 23
     hilos = futures.ThreadPoolExecutor(max_workers=5)
     resultado_a_futuro = hilos.map(hilo ,range(0,duracion,round(duracion/5)))
     for elemento in list(resultado_a_futuro):
-        #print(elemento, round(duracion/5), duracion)
         mix += elemento
     mix.export("Mix."+salida, format=salida)
     return("Mix."+salida)
-
-#direccion = "/home/javi/Final_computacion2/58004-Cercasi-Javier/Rain.mp3"
-#salida = "wav"
-#audio(direccion, salida)
