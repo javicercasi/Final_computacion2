@@ -114,8 +114,8 @@ async def handle_echo(reader, writer):
 async def main():
     
     global adr
-    ip = "127.0.0.1"
-    #ip = socket.gethostbyname(socket.gethostname())
+    #ip = "127.0.0.1"
+    ip = socket.gethostbyname(socket.gethostname())
     server = await asyncio.start_server(
         handle_echo, host=[str(ip)], port=args.port, loop=None, limit=50000000) 
 
