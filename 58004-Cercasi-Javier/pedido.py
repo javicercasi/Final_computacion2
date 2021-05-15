@@ -17,7 +17,6 @@ def argumentos():
                         help="Directorio donde estan los documentos web")
 
     args = parser.parse_args()
-    print(args.port, args.size)
     try:
         if not args.port:
             raise NameError
@@ -41,5 +40,3 @@ def argumentos():
         print("\nDebe ingresar un size mayor a 10kB.\n")
         exit()
     return(args)
-
-#Agregar estas funciones a la guia
