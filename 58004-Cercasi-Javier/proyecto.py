@@ -92,9 +92,9 @@ async def handle_echo(reader, writer):
     fd = os.open(archivo, os.O_RDONLY)
     fin = True
     while fin is True:
-        body = os.read(fd, args.size)
+        body = os.read(fd, int(args.size))
         writer.write(body)
-        if (len(body) != args.size):
+        if (len(body) != int(args.size)):
             os.close(fd)
             try:
                 await writer.drain()
