@@ -39,7 +39,7 @@ async def handle_echo(reader, writer):
 
         entrada = data.split(b" filename=")[1].split(b'\r\n')[0].split(b'"')[1].decode()
         extension_in = entrada.split(".")[1]
-        print("\n-Archivo enviado:", entrada, "Extension de entrada:",extension_in, "Extension Solicitada:", str(extension_out))
+        print("\n-Archivo recibido:", entrada, "Extension de entrada:",extension_in, "Extension de salida:", str(extension_out))
 
         with open(entrada, 'wb') as f:
             f.write(bytearray(datos))
@@ -112,8 +112,8 @@ async def handle_echo(reader, writer):
 async def main():
 
     global adr
-    #ip = "127.0.0.1"
-    ip = socket.gethostbyname(socket.gethostname())
+    ip = "127.0.0.1"
+    #ip = socket.gethostbyname(socket.gethostname())
     server = await asyncio.start_server(
         handle_echo, host=[str(ip)], port=args.port, loop=None, limit=50000000) 
 
