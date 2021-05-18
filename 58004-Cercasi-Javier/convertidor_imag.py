@@ -1,7 +1,8 @@
 from PIL import Image
 
 
-def imagenes(entrada, output, q):
+def imagenes(entrada, q, adr, output):
+
     try:
         salida = entrada.split(".")[0]+'.'+output
         im = Image.open(entrada)

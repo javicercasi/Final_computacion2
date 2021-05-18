@@ -24,7 +24,7 @@ def audio(direccion, salida):
     except:
         return("Error")
     duracion = int(tema.duration_seconds) + 1   
-    hilos = futures.ThreadPoolExecutor(max_workers=5)
+    hilos = futures.ProcessPoolExecutor(max_workers=5)
     resultado_a_futuro = hilos.map(hilo ,range(0,duracion,round(duracion/5)))   #180s, #36s
     for elemento in list(resultado_a_futuro):
         mix += elemento

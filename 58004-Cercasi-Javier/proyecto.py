@@ -1,12 +1,17 @@
 import os, asyncio, array, socket, queue, threading
 from os import remove
-from pedido import argumentos
+from pedido2 import argumentos, importe
 from convertidor_doc import pdf_to_word , word_to_pdf
 from convertidor_imag import imagenes
 from convertidor_audios import audio
 #argsdocumentroot = os.getcwd()
 #argssize = 1000000
-args = argumentos()
+#args = argumentos()
+args = importe()
+if args == "Vacio":
+    print("\nEl archivo de configuracion se encuentra Vacio:")
+    argu = argumentos()
+    args = (argu.size, argu.port, argu.documentroot)
 adr = ""
 
 
@@ -24,7 +29,7 @@ async def handle_echo(reader, writer):
         encabezado = data.decode().splitlines()[0] # GET /imagen.jpg
 
     if encabezado.split()[0] == "GET":  # Para paginas html.
-        archivo = args.documentroot + encabezado.split()[1]
+        archivo = args[2] + encabezado.split()[1]
     
     if encabezado.split()[0] == "POST":
 
@@ -48,35 +53,36 @@ async def handle_echo(reader, writer):
         q = queue.Queue()
 
         if extension_out == "docx":
-            hilo = threading.Thread(target=pdf_to_word, args=(entrada, q, adr,))
+            funcion = pdf_to_word
         
         elif extension_out == "pdf":
-            hilo = threading.Thread(target=word_to_pdf, args=(entrada, q, adr,))
+            funcion = word_to_pdf
 
         # Conversor de Imagenes:
         if extension_out == "jpg" or extension_out == "png" or extension_out == "ppm" or extension_out == "jpeg" or extension_out == "BMP" or extension_out == "gif" or extension_out == "TIFF" or extension_out == "EPS":
-            hilo = threading.Thread(target=imagenes, args=(entrada, extension_out, q,))
+            funcion = imagenes
 
         # Conversor de Audio:
         if extension_out == "ogg" or extension_out == "mp3" or extension_out == "wav" or extension_out == "flac" or extension_out == "aif":
             archivo = audio(entrada, extension_out)
         
         if extension_out != "html" and extension_out != "ico" and extension_out != "ogg" and extension_out != "mp3" and extension_out != "wav" and extension_out != "flac" :
+            hilo = threading.Thread(target=funcion, args=(entrada, q, adr, extension_out,))
             hilo.start()
             archivo = q.get()
             hilo.join()
 
 
-    if archivo == (args.documentroot + "/"):
-        archivo = args.documentroot + '/index.html'
+    if archivo == (args[2] + "/"):
+        archivo = args[2] + '/index.html'
 
     if archivo == "Error":
-        archivo = args.documentroot + '/500error.html'
+        archivo = args[2] + '/500error.html'
         codigo = "HTTP/1.1 500 Internal Server Error"
         extension_out = "html"
 
     if os.path.isfile(archivo) is False:
-        archivo = args.documentroot + '/400error.html'
+        archivo = args[2] + '/400error.html'
         codigo = "HTTP/1.1 400 File Not Found"
         extension_out = "html"
     
@@ -92,9 +98,9 @@ async def handle_echo(reader, writer):
     fd = os.open(archivo, os.O_RDONLY)
     fin = True
     while fin is True:
-        body = os.read(fd, int(args.size))
+        body = os.read(fd, int(args[0]))
         writer.write(body)
-        if (len(body) != int(args.size)):
+        if (len(body) != int(args[0])):
             os.close(fd)
             try:
                 await writer.drain()
@@ -112,10 +118,11 @@ async def handle_echo(reader, writer):
 async def main():
 
     global adr
-    #ip = "127.0.0.1"
-    ip = socket.gethostbyname(socket.gethostname())
+
+    ip = "127.0.0.1"
+    #ip = socket.gethostbyname(socket.gethostname())
     server = await asyncio.start_server(
-        handle_echo, host=[str(ip)], port=args.port, loop=None, limit=50000000) 
+        handle_echo, host=[str(ip)], port=int(args[1]), loop=None, limit=50000000) 
 
     addr = server.sockets[0].getsockname()
     adr= "\nServidor en:"+str(addr)
