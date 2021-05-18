@@ -1,12 +1,11 @@
 import os, asyncio, array, socket, queue, threading
 from os import remove
-from pedido2 import argumentos, importe
+from pedido import argumentos, importe
 from convertidor_doc import pdf_to_word , word_to_pdf
 from convertidor_imag import imagenes
 from convertidor_audios import audio
-#argsdocumentroot = os.getcwd()
-#argssize = 1000000
 #args = argumentos()
+
 args = importe()
 if args == "Vacio":
     print("\nEl archivo de configuracion se encuentra Vacio:")

@@ -1,9 +1,21 @@
 import argparse
 import os
+control = 0
+
+def importe():
+
+    global control
+    fd = os.open("server2.config", os.O_RDONLY)
+    body = os.read(fd, 100).decode()
+
+    if len(body) == 0:
+        return ("Vacio")
+    else:
+        return(body.split()[0], body.split()[1], body.split()[2])
+
 
 
 def argumentos():
-
     parser = argparse.ArgumentParser(usage="\nproyecto.py [-h] -d DIR -p PUERTO -s SIZE")
 
     parser.add_argument('-s', '--size', metavar='SIZE', type=str, default="20000",
@@ -30,7 +42,7 @@ def argumentos():
         if not args.documentroot or os.path.isdir(args.documentroot) is False:
             raise NameError
     except NameError:
-        print("\nDebe ingresar un directorio valido.\n")
+        print("\nFaltan argumentos\n")
         exit()
 
     try:
@@ -39,4 +51,5 @@ def argumentos():
     except ValueError:
         print("\nDebe ingresar un size mayor a 10kB.\n")
         exit()
+            
     return(args)
