@@ -19,11 +19,11 @@ async def handle_echo(reader, writer):
     error = 0
 
     if len(data) == 0:
-        encabezado = "GET /index.html"
+        encabezado = "GET /index.html"  # Mantener viva la conexion
     else:
         encabezado = data.decode().splitlines()[0] # GET /imagen.jpg
 
-    if encabezado.split()[0] == "GET":
+    if encabezado.split()[0] == "GET":  # Para paginas html.
         archivo = args.documentroot + encabezado.split()[1]
     
     if encabezado.split()[0] == "POST":
@@ -112,8 +112,8 @@ async def handle_echo(reader, writer):
 async def main():
 
     global adr
-    ip = "127.0.0.1"
-    #ip = socket.gethostbyname(socket.gethostname())
+    #ip = "127.0.0.1"
+    ip = socket.gethostbyname(socket.gethostname())
     server = await asyncio.start_server(
         handle_echo, host=[str(ip)], port=args.port, loop=None, limit=50000000) 
 
