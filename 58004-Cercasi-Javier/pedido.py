@@ -1,19 +1,16 @@
 import argparse
 import os
-control = 0
 
 def importe():
 
     global control
-    fd = os.open("server2.config", os.O_RDONLY)
+    fd = os.open("server.config", os.O_RDONLY)
     body = os.read(fd, 100).decode()
 
     if len(body) == 0:
         return ("Vacio")
     else:
         return(body.split()[0], body.split()[1], body.split()[2])
-
-
 
 def argumentos():
     parser = argparse.ArgumentParser(usage="\nproyecto.py [-h] -d DIR -p PUERTO -s SIZE")
@@ -50,6 +47,5 @@ def argumentos():
             raise ValueError
     except ValueError:
         print("\nDebe ingresar un size mayor a 10kB.\n")
-        exit()
-            
+        exit()            
     return(args)
