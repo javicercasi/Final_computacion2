@@ -4,7 +4,7 @@ import os
 def importe():
 
     global control
-    fd = os.open("server2.config", os.O_RDONLY)
+    fd = os.open("server.config", os.O_RDONLY)
     body = os.read(fd, 100).decode()
 
     if len(body) == 0:
